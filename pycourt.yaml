@@ -1,0 +1,140 @@
+# 🏛️ PyCourt 最高法院 - 本仓库自审豁免清单（按法典编号分组）
+#
+# 仅承载“路径/文件级别”的治外法权配置，具体算法逻辑仍由各法官实现负责。
+#
+# 约定：
+# - 顶层键为 `exemptions`；
+# - 其下按法条编号分组，如 `DT001`、`DS001`、`LL001` 等；
+# - 每个法条下至少声明一个 `files` 列表（即便为空），方便其他开发者
+#   明确可配置入口，并在自己的项目中按需追加路径模式；
+# - `reasons` 段为可选的人类说明文本，不参与程序逻辑，仅用于帮助理解豁免。
+#
+# 此文件仅用于本 PyCourt 仓库自身的静态审计，不会影响下游项目安装 PyCourt
+# 之后的默认行为。下游项目应在各自仓库根目录下维护独立的 `pycourt.yaml`。
+
+laws:
+exemptions:
+  AC001:
+    files: []
+
+  AC003:
+    files: []
+
+  BC001:
+    files:
+      - "pycourt/**/*.py"
+      - "tests/**"
+
+    reasons:
+      "pycourt/**/*.py": "工具与脚手架脚本不直接暴露对外 API 或领域边界，允许使用基础类型与过程式参数，不强制 BC001 的 DTO 边界约束。"
+      "tests/**": "测试代码用于验证行为而非定义正式边界契约，允许直接使用基础类型和临时结构，避免 BC001 干扰测试可读性。"
+  DI001:
+    files:
+      - "pycourt/**"
+      - "tests/**"
+    reasons:
+      "tests/**": "测试代码用于验证行为而非定义正式边界契约，允许直接使用基础类型和临时结构，避免 DI001 干扰测试可读性。"
+      "pycourt/**": "PyCourt 本身作为法官工具集，其内部模块间依赖属于工具实现范畴，不适用 DI001 的约束。"
+
+  DT001:
+    files: []
+
+  DS001:
+    files: []
+
+  HC001:
+    files:
+      - "tests/**"
+      - "pycourt/cli.py"
+      - "pycourt/config/judges_texts.py"
+      - "pycourt/yaml/**"
+      - "pycourt/laws/hc001.py"
+      - "pycourt/laws/pc001.py"
+      - "pycourt/laws/sk001.py"
+      - "pycourt/laws/ou001.py"
+      - "pycourt/laws/bc001.py"
+      - "pycourt/laws/tp001.py"
+      - "pycourt/laws/vt001.py"
+      - "pycourt/laws/dt001.py"
+    reasons:
+      "tests/**": "测试代码中的硬编码多为断言文本、示例 payload 或调试输出，要求全部迁移为常量得不偿失，因此整体豁免 HC001。"
+      "pycourt/cli.py": "CLI 参数名与帮助文案属于用户界面文本，集中到常量反而降低可读性，视为工具层硬编码。"
+      "pycourt/config/judges_texts.py": "法院文案和法典消息模板已经通过 YAML 外部化管理，本模块中的字符串多为键名与辅助说明，统一豁免 HC001。"
+      "pycourt/yaml/**": "YAML 文件本身就是配置与文案的存放位置，不纳入 HC001 审查。"
+      "pycourt/laws/hc001.py": "HC 系列法官自身需要声明启发式规则与关键字列表，这些属于规则定义而非业务硬编码，不由 HC001 自我审判。"
+      "pycourt/laws/pc001.py": "参数分类法官的实现多依赖字符串/正则模式识别规则目录与 I/O 行为，这些属于元规则定义，不由 HC001 审查。"
+      "pycourt/laws/sk001.py": "技能法官实现内部需要通过字符串模式检测 Skill 资产访问与 Skill ID 使用，视为协议元数据而非业务硬编码。"
+      "pycourt/laws/ou001.py": "OU001 自身需要通过字符串/正则检测裸 object 使用模式，相关字符串属于检测协议，不由 HC001 约束。"
+      "pycourt/laws/bc001.py": "疆域边界法官内部的类型拆分与后缀匹配逻辑依赖固定字符串/符号，属于技术规则实现，不视为业务阈值硬编码。"
+      "pycourt/laws/tp001.py": "测试纯净度法官依赖特定 import 文本与正则模式识别 I/O/伪覆盖场景，这些字符串属于审计协议的一部分。"
+      "pycourt/laws/vt001.py": "向量事务法官内部用于识别事件字段与 Provider 路由的关键字/类名均为协议定义，HC001 不再二次审查。"
+      "pycourt/laws/dt001.py": "时间法官通过固定字符串/属性名识别 datetime.now/utcnow 滥用，这些检测模式本身构成规则定义。"
+  
+  HC001_COMPAT_FILES:
+    files: []
+
+  HC001_REPORT_GENERATOR_FILES:
+    files: []
+
+  HC005:
+    files:
+      - "pycourt/laws/hc001.py"
+    reasons:
+      "pycourt/laws/hc001.py": "HC005 法官自身需要声明启发式阈值等内部控制常量，这些数值属于规则定义而非业务参数，避免由本法条自我审判。"
+  LL001:
+    files:
+      - "tests/**"
+      - "pycourt/laws/hc001.py"
+    reasons:
+      "tests/**": "测试中的长函数多为场景搭建或集成流程脚本化描述，拆分会显著降低可读性，LL001 在此主要会产生风格噪音，因此整体豁免。"
+      "pycourt/laws/hc001.py": "HC 系列法官实现聚合了多条规则逻辑，结构上相对集中，拆分会削弱整体可读性，适度豁免 LL001。"
+
+  OU001:
+    files:
+      - "pycourt/laws/bc001.py"
+    reasons:
+      "pycourt/laws/bc001.py": "边界法官自身需要枚举基础类型集合并在实现中出现 'object' 等标识，属于元规则定义，不应被 OU001 视为业务层“灰色类型”违规。"
+
+  PC001:
+    files:
+      - "tests/**"
+    reasons:
+      "tests/**": "测试中出现的长文本与配置片段往往是用例自带数据，不应被视为运营参数，统一豁免 PC001。"
+  SK001:
+    files:
+      - "tests/**"
+      - "pycourt/laws/sk001.py"
+    reasons:
+      "tests/**": "测试代码中可能内联构造 Skill ID 字符串以覆盖边界场景，SK001 在此会产生大量噪音。"
+      "pycourt/laws/sk001.py": "技能法官自身需要声明一组典型 Skill ID 作为规则元数据，这些 ID 属于规范定义，不视为业务代码中的硬编码。"
+  TC001:
+    files:
+      - "tests/**"
+      - "pycourt/laws/tc001.py"
+      - "pycourt/laws/hc001.py"
+      - "pycourt/models.py"
+    reasons:
+      "tests/**": "部分测试可能为类型相关场景演示 TYPE_CHECKING 的用法或对历史代码做回归验证，完全禁止会影响测试覆盖，统一豁免 TC001。"
+      "pycourt/laws/tc001.py": "TC001 自身的法条实现需要在文档与示例中出现 TYPE_CHECKING 关键字，属于元规则说明，不应被本法条反向制裁。"
+      "pycourt/laws/hc001.py": "硬编码法官中可能在规则实现或注释中提及 TYPE_CHECKING 模式作为示例，为避免自举冲突，对该法条文件豁免 TC001。"
+  TP001:
+    files: []
+
+  UW001:
+    files:
+      - "tests/**"
+      - "pycourt/**"
+    reasons:
+      "tests/**": "测试代码中可以直接调用 commit/rollback 等方法以模拟事务场景，UW 系列在此只会制造噪音，因此整体豁免。"
+      "pycourt/**": "PyCourt 自身不包含业务仓储与 UoW 拓扑结构，UW 系列规则在此不具备实际意义，统一视为工具域豁免。"
+
+  VT001:
+    files:
+      - "tests/**"
+      - "pycourt/**"
+    reasons:
+      "tests/**": "测试代码可以自由构造 asset/capsule 事件与 Vector 路由组合来覆盖边界情况，不强制满足 VT001 的“触发协议完备性”约束。"
+      "pycourt/**": "PyCourt 本身不包含业务级 Vector 事件触发链路，VT 系列在此只作为规则实现，不审计自身代码。"
+
+  RE001:
+    files: []

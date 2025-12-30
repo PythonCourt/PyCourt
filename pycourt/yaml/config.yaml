@@ -1,0 +1,244 @@
+# 🏛️ PyCourt 全系列法官配置 (config.yaml)
+#
+# 身份
+# ==== 
+# - 本文件是 Court 领域的「配置法典」入口，只承载与法院审计直接相关的事实；
+# - 当前仅定义 `laws:` 段，按法条编号组织配置空间（hc001 / ac001 / dt001 ...）；
+# - 其他文本/豁免信息分别由 `judges_text.yaml` 与 `exempt.yaml` 管理。
+#
+# 用法
+# ==== 
+# - 仅允许通过 :func:`tools.court.loader.load_court_config` 读取本文件，
+#   **禁止**在业务代码或 Law 实现中直接打开/解析此 YAML；
+# - 每条法条在 `laws.<code>` 下拥有自己的配置子树：
+#   - 基础字段（enabled / exempt_files / description）由 :class:`PyCourtBase` 提供；
+#   - 其余字段（如 HCConfig 的 module_patterns 等）由对应 Law 家族配置模型负责解释；
+# - 修改本文件后，应运行 `./qas.sh -s tools/court` 确保法院工具仍然通过审计。
+#
+# 禁止行为
+# ======== 
+# - 禁止在此文件中混入与 Court 审计无关的配置（如 CLI、OPS、业务服务等）；
+# - 禁止绕过 Pydantic 模型直接在代码中依赖 YAML 结构细节（键名/嵌套路径等）；
+# - 禁止在此文件中新增「临时调试字段」：调试开关应通过代码或专门的调试配置处理。
+
+laws:
+  # HC 家族配置（对应 tools.court.config.HCConfig）
+  # - 仅承载硬编码审计启发式：模块匹配模式、名称 token、数值阈值等；
+  # - 不存放具体业务系统的业务阈值，避免把业务配置误塞进 Court；
+  # - 字段必须与 HCConfig 一一对应，禁止扩展自由形态 payload/dict 等动态结构。
+  hc001:
+    # constants 相关
+    module_patterns:
+      - "constants.py"
+      - "constants/"
+      - "/constants/"
+    naked_const_exempt_patterns:
+      - "__init__.py"
+      - "conftest.py"
+      - "test_"
+      - "_test.py"
+    system_const_prefixes:
+      - "Final"
+      - "Literal"
+      - "TypeVar"
+      - "Generic"
+      - "Protocol"
+      - "Callable"
+      - "ClassVar"
+      - "Annotated"
+    allowed_naked_patterns:
+      - "_LOGGER"
+      - "_LOG"
+      - "LOGGER_NAME"
+    typevar_pattern: "^[A-Z]$"
+
+    # strings 相关
+    # 行级快速排除的片段（与旧版 EXCLUDE_SUBSTRINGS 含义一致，统一小写匹配）。
+    exclude_substrings:
+      - "test"
+      - "example"
+      - "debug"
+      - "log"
+
+    # 报表/Prompt 生成相关文件模式（旧版 payload.report_generator_files）。
+    report_generator_files: []
+
+    # 命中则整行豁免 HC001 的片段，对应旧 hardcode.yaml 中
+    # laws.hc001.payload.strings 的语义。
+    exempt_strings:
+      # Pydantic Field 描述
+      - 'description="'
+      - 'Field('
+      - 'default='
+      - 'ge='
+      - 'le='
+      - 'gt='
+      - 'lt='
+      # Final常量定义
+      - 'Final[str] = "'
+      - 'Final[int] = '
+      - 'Final[float] = '
+      - 'Final[bool] = '
+      - 'Final[list[str]] = '
+      # TypeAlias定义
+      - 'TypeAlias = str'
+      - 'TypeAlias = int'
+      - 'TypeAlias = float'
+      - 'TypeAlias = bool'
+      # 常见的技术字符串
+      - '"utf-8"'
+      - '"ascii"'
+      - '"GET"'
+      - '"POST"'
+      - '"PUT"'
+      - '"DELETE"'
+      - '"application/json"'
+      - 'quality.yaml'
+      - 'quality_linter.yaml'
+      - 'Path(__file__)'
+      # Python内置
+      - '"__name__"'
+      - '"__main__"'
+      - '"__init__"'
+      - '"__all__"'
+      - '"pyproject.toml"'
+
+      # 配置键名
+      - 'extra="'
+      - 'model_config'
+      # 常见字典键书写模式（键: 值），避免将结构化日志/序列化键名误判为硬编码
+      - '": '
+      # 函数参数默认值
+      - 'def __init__(self, message: str, '
+      - '= "unknown"'
+      - '= "development"'
+      - '= "primary"'
+      - '= "normal"'
+      - '= "pending"'
+      - '= "success"'
+      - '= "error"'
+      # 类常量定义
+      - ' = "pending"'
+      - ' = "running"'
+      - ' = "completed"'
+      - ' = "failed"'
+      - ' = "cancelled"'
+      - ' = "success"'
+      - ' = "error"'
+      - ' = "normal"'
+      - ' = "urgent"'
+      - ' = "critical"'
+      # 日志和错误消息的占位符
+      - '": "'
+      - '" "'
+      - '","'
+      # 格式化字符串
+      - 'f"'
+      - '.format('
+      # 注释中的示例
+      - '# "'
+      - "# \""
+
+      # HC 自身元数据 / 协议关键字与技术检测模式
+      # CourtConfig / loader 等集中配置键
+      - enabled
+      - exempt_files
+      - description
+      - template
+
+      # 结构性目录 / 模块后缀默认值（BC/PC/VT 等配置模型的默认拓扑）
+      - api/routes/
+      - infra/adapters/**
+      - core.base.types
+      - core.dto
+      - api.http
+      - core/constants/
+      - infra/vector/providers.py
+
+      # 协议/审计相关关键字（由其他法官负责具体语义）
+      - TYPE_CHECKING
+      - "pragma: exclude file"
+      - datetime
+      - datetime.now(
+      - datetime.utcnow(
+      - datetime.
+      - CapsuleAssetType.
+      - CapsuleIssuer.
+      - AssetMaterializedEvent
+      - CapsuleMaterializedEvent
+      - stage_public_event
+      - asset_type
+      - capsule_kind
+      - issuer
+
+      # 测试/依赖相关技术字符串
+      - import sqlalchemy
+      - from sqlalchemy
+      - import redis
+      - from redis
+      - importlib.import_module
+      - hasattr(
+      - \\.
+      - OBJECT_PATTERN
+
+      # 其他法官的中文提示/细粒度说明（视为法条元数据）
+      - 通过 __all__ 聚合子模块符号
+      - 该 Skill ID 未在 assets/skills 索引或 SkillId 常量中注册
+      - "📋 位置: 返回值"
+
+      # AnyCast / RootModel 等类型系统相关固定标识
+      - "cast justified:"
+      - cast(
+      - RootModel
+      - <unknown>
+      - subscript
+
+    # 日志 / 异常 / 类型别名 / f-string 相关前缀。
+    logger_prefixes:
+      - "logger."
+      - "logging."
+      - "log."
+    exception_call_prefixes:
+      - "raise "
+    typealias_keywords:
+      - "TypeAlias"
+    fstring_prefixes:
+      - "f\""
+      - "f'"
+
+    # numeric_params 相关
+    # 以下默认值与旧 hc001.py 中的类常量含义一致。
+    int_max: 5000
+    min_control_value: 2
+
+    # 名称 token：建议在旧行为基础上补充业务特定 token。
+    strong_name_tokens:
+      - "label_threshold_"
+      - "high_score_threshold"
+      - "score_threshold"
+    weak_name_tokens:
+      - "threshold"
+      - "weight"
+      - "ratio"
+      - "score"
+      - "prob"
+      - "confidence"
+
+    # 控制型 token：对应旧实现中的重试 / 上限 / 窗口等关键词。
+    control_tokens:
+      - "retry"
+      - "retries"
+      - "attempt"
+      - "attempts"
+      - "top_"
+      - "max_"
+      - "min_"
+      - "limit"
+      - "window"
+      - "size"
+      - "timeout"
+      - "batch"
+
+    # 名称片段豁免表：与旧 payload.numeric_params.exempt_names 含义一致。
+    exempt_names: []
+

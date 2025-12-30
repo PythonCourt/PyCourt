@@ -1,0 +1,15 @@
+:root {
+  /* 标题加一点分量 */
+  --md-typeset-headline-font-weight: 700;
+  --md-typeset-font-weight: 700;          /* 正文字重略调粗一点 */
+}
+
+/* 顶部站点标题稍微更粗一点 */
+.md-header__title {
+  font-weight: 700;
+}
+
+/* 侧边栏导航分组标题稍微加粗，条目保持正常 */
+.md-nav__title {
+  font-weight: 600;
+}

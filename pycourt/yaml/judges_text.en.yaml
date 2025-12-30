@@ -1,0 +1,270 @@
+# === 🏛️ PyCourt Supreme Court - Courtroom & Judge Messages (EN) ===
+
+courtroom:
+  supreme_court:
+    start: "🏛️ PyCourt Supreme Court is now in session..."
+    summary_failed: "❌ Found {count} constitutional violations:"
+    summary_passed: "✅ Review passed, no violations found in the selected scope"
+
+  audit_clerk:
+    deps_missing_title: "❌ Required audit tools are missing"
+    deps_must_install: "🏛️ **[Imperial Decree]** The following tools are core to the audit system and must be installed:"
+    deps_install_guide: "💡 Installation guide:"
+    deps_refuse_run: "🏛️ The audit system refuses to run when required tools are missing!"
+
+# === 🏛️ Judge templates by law code (EN) ===
+
+judges:
+  AC001:
+    template: |
+      🦆 Duck Typing Inspector: Detected misuse of Any type
+      📌 Target variable/attribute: {target_name}
+      📋 Annotation: {annotation_str}
+      💡 Suggestion: Avoid using Any. Introduce an explicit contract type (DTO / Protocol / TypedDict).
+      🔧 Quick fix examples:
+        - Define a Pydantic model under `core/dto` and reference that model type here.
+        - Or use `TypedDict` / `Protocol` to describe the structure instead of Any.
+
+  AC002:
+    template: |
+      🦆 Type System Auditor: Detected a dict without a value contract
+      📌 Target variable/attribute: {target_name}
+      📋 Annotation: {annotation_str}
+      💡 Suggestion: Do not use raw dict. Introduce explicit key/value models or type aliases.
+      🔧 Quick fix examples:
+        - Wrap the business dict in `RootModel[dict[str, DTO]]`.
+        - Define DTO / TypedDict / Protocol for the value type and reference it in dict[...].
+
+  AC003:
+    template: |
+      🦆 Type System Auditor: Detected suspicious use of typing.cast
+      📌 Expression: {annotation_str}
+      💡 Suggestion: `cast` should be a last resort. Prefer fixing type signatures and contracts instead.
+      🔧 Quick fix examples:
+        - Trace data origins so the type checker can infer the correct type naturally.
+        - For cross-layer calls, define DTOs / protocols in `core/dto` instead of casting at call sites.
+        - For necessary casts, add a nearby comment `# cast justified: ...` documenting the reason.
+
+  BC001:
+    template: |
+      🏛️ Boundary Control Judge: Detected boundary contract violation
+      📌 Function: {func}
+      📋 Offending parameter: {name} -> {type}
+      💡 Suggestion: Define a Pydantic DTO under `core/dto`.
+      🔧 Quick fix: Use `pydantic.BaseModel` to define a contract type.
+
+  DI001:
+    template: |
+      🏛️ Dependency Inversion Judge: Detected illegal cross-component dependency
+      📋 Offending import: {imported_module}
+      💡 Suggestion: Access other components via core abstractions or DI container wiring.
+      🔧 Quick fix: Define an interface in `core/port` and inject the implementation via DI.
+
+  DS001:
+    template: |
+      🏛️ Docstring Judge: Detected missing function docstring
+      📌 Function: {func}
+      💡 Suggestion: Add a docstring describing behavior, parameters and return value.
+      🔧 Quick fix: Use Google/NumPy style docstrings.
+
+  DS002:
+    template: |
+      🏛️ Docstring Judge: Detected insufficient class documentation
+      📌 Class: {klass}
+      📋 Requirement: Docstring length must be at least {min_len} characters
+      💡 Suggestion: Add a docstring describing the class responsibility and usage.
+      🔧 Quick fix: Add a triple-quoted docstring right below the class definition.
+
+  DT001:
+    template: |
+      🏛️ Time Judge: Detected direct usage of datetime.now()/utcnow()
+      💡 Suggestion: Access time through a ClockPort interface.
+      🔧 Quick fix: Inject a ClockPort dependency to support virtual/accelerated timelines.
+
+  HC001:
+    template: |
+      🏛️ Hardcoding Judge: Detected hardcoded string
+      📌 Code snippet: {snippet}
+      💡 Suggestion: Move literals into configuration or constants as described in docs/CONSTANTS-GUIDE.md.
+      🔧 Quick fix: Extract the literal into a constant or configuration file.
+
+  HC002:
+    template: |
+      🏛️ Constants Judge: Detected bare constant import
+      📌 Constant: {name}
+      💡 Suggestion: Import the namespace class instead of a bare constant.
+      🔧 Quick fix: See docs/GUIDE/CONSTANTS.md.
+
+  HC003:
+    template: |
+      🏛️ Constants Judge: Detected bare constant definition
+      📌 Constant: {name}
+      💡 Suggestion: Move it into a dedicated constants module and organize with namespace classes.
+      🔧 Quick fix: See docs/GUIDE/CONSTANTS.md.
+
+  HC004:
+    template: |
+      🏛️ Constants Judge: Detected cross-engine import of business constants
+      📋 Source: {source}
+      💡 Suggestion: If this must be shared, promote it to a system-level constant.
+      🔧 Quick fix: See docs/GUIDE/CONSTANTS.md.
+
+  HC005:
+    template: |
+      🏛️ Magic Number Judge: Detected hardcoded tunable business parameter
+      📌 Code snippet: {snippet}
+      📋 Impact: Thresholds/weights/window sizes, when hardcoded, cannot be safely tuned per environment or version.
+      💡 Suggestion: Move such parameters into assets/rules or assets/skills and access via RulesProviderPort / SkillProviderPort.
+      🔧 Quick fix:
+        - Add corresponding fields under assets/rules or assets/skills (for tasks like rating/highlight/memory.slice, etc.).
+        - Access them through RulesProviderPort or SkillProviderPort instead of using literals.
+        - If a fallback default is needed, centralize it in a domain.constants module and prefer config values, falling back only when missing.
+
+  LL001:
+    template: |
+      🏛️ Complexity Judge: Detected overly long function
+      📌 Function: {func}
+      📋 Current length: {lines} lines (limit: {limit})
+      💡 Suggestion: Split into smaller, more focused helper functions.
+      🔧 Quick fix: Extract sub-functions so each does exactly one thing.
+
+  LL002:
+    template: |
+      🏛️ Complexity Judge: Detected high cyclomatic complexity
+      📌 Function: {func}
+      📋 Complexity: {complexity} (limit: {limit})
+      💡 Suggestion: Review if/for/while branches and simplify control flow.
+      🔧 Quick fix: Use strategy pattern, extract sub-functions, or refactor control structures.
+
+  OU001:
+    template: |
+      🏛️ Grey Fog Judge: Detected usage of `object` as a type
+      💡 Suggestion: Introduce explicit base classes under core/dto or core/port.
+      🔧 Quick fix: Replace bare `object` with Protocol or concrete types.
+
+  PC001:
+    template: |
+      🏛️ Parameter Classification Judge: Detected operational parameter in core constants
+      📌 Constant: {const_name}
+      💡 Suggestion: Move this operational parameter from core constants into assets/rules, provided by a rules provider.
+      🔧 Quick fix: Add a rules file under assets/rules and access it through a RulesProvider (or equivalent abstraction).
+
+  PC002:
+    template: |
+      🏛️ Parameter Classification Judge: Detected direct access to rules assets, bypassing RulesProviderPort
+      📋 Offending code: {snippet}
+      💡 Suggestion: Do not open/read assets/rules or rules/** directly. Always go through the rules provider abstraction.
+      🔧 Quick fix: Use the project's RulesProvider abstraction and RuleId to access rule configuration.
+
+  RE001:
+    template: |
+      🏛️ Facade Discipline Judge: Detected oversized __init__.py
+      📋 Current code lines: {code_count} (limit: {max_init_lines})
+      💡 Suggestion: Keep facades slim; avoid piling implementation details into __init__.py.
+      🔧 Quick fix: Move implementation into dedicated modules.
+
+  RE002:
+    template: |
+      🏛️ Facade Discipline Judge: Detected business logic in __init__.py
+      📋 Offending node type: {node_type}
+      💡 Suggestion: Move implementation to dedicated modules.
+      🔧 Quick fix: Only import and expose symbols at call sites.
+
+  RE003:
+    template: |
+      🏛️ Facade Discipline Judge: Detected disallowed structures in __init__.py
+      📋 Detail: {detail}
+      💡 Suggestion: Facades should only contain lightweight metadata and minimal glue.
+      🔧 Quick fix: Move implementation into dedicated modules and keep __init__.py minimal.
+
+  SK001:
+    template: |
+      🏛️ Skills Usage Judge: Detected hardcoded Skill ID string
+      📌 Skill ID: {skill_id}
+      💡 Suggestion: Refer to skills via centralized SkillId constants or configuration, not raw strings in business code.
+      🔧 Quick fix: Declare SkillId in a shared constants/config module and access skills via a SkillProvider + SkillId.
+
+  SK002:
+    template: |
+      🏛️ Skills Usage Judge: Detected direct file access to skill assets
+      📋 Offending code: {snippet}
+      💡 Suggestion: Do not access assets/skills or SkillsPath.ROOT directly. Always go through a SkillProvider + SkillId.
+      🔧 Quick fix: Use the project's SkillProvider abstraction to orchestrate skills.
+
+  TC001:
+    template: |
+      🏛️ Type Checking Judge: Detected illegal TYPE_CHECKING usage
+      💡 Suggestion: Promote shared dependencies to core/dto and refactor.
+      🔧 Quick fix: Consider using JSONData + factory patterns to solve architectural issues instead of cross-importing types.
+
+  TP001:
+    template: |
+      🏛️ Test Purity Judge: Detected illegal I/O dependency in a unit test
+      📌 Location: {file}:{line}
+      📋 Forbidden import: {import_stmt}
+      💡 Suggestion: Unit tests must be I/O isolated. Use ports or test doubles (fakes/mocks) instead of real I/O.
+
+  TP002:
+    template: |
+      🏛️ Test Purity Judge: Detected non-whitelisted tests importing SQLAlchemy directly
+      📌 Location: {file}:{line}
+      📋 Import statement: {import_stmt}
+      💡 Suggestion: Restrict DB integration tests to dedicated locations (e.g. tests/infra/database/contracts/). Other tests should use ports or repository protocols.
+
+  TP003:
+    template: |
+      🏛️ Test Purity Judge: Detected pseudo-coverage tests that only check symbol existence
+      📌 Location: {file}:{line}
+      📋 Suspicious pattern: importlib.import_module + hasattr without real behavior checks
+      💡 Suggestion: Write tests that call the target function/method at least once and assert real behavior instead of just existence.
+
+  UW001:
+    template: |
+      🏛️ Unit of Work Judge: Detected illegal use of RepositoryFactory
+      📋 Offending method: {method}
+      💡 Suggestion: Capsule issuance flows must go through a Unit of Work.
+      🔧 Quick fix: Use uow_factory.create() + uow.repos.* + await uow.commit().
+      📚 Reference: docs/spec/DATA_UOW.md
+
+  UW002:
+    template: |
+      🏛️ Unit of Work Judge: Detected repository calling commit()
+      💡 Suggestion: Business repositories must be flush-only.
+      🔧 Quick fix: Remove commit() and delegate committing to UnitOfWork.commit().
+      📚 Reference: docs/spec/DATA_UOW.md
+
+  UW003:
+    template: |
+      🏛️ Unit of Work Judge: Detected repository calling rollback()
+      💡 Suggestion: Business repositories must be flush-only.
+      🔧 Quick fix: Remove rollback() and delegate rollback to UnitOfWork.rollback().
+      📚 Reference: docs/spec/DATA_UOW.md
+
+  UW004:
+    template: |
+      🏛️ Unit of Work Judge: Detected capsule issuance bypassing issuer (direct use of uow.repos.time_capsule.*)
+      💡 Rule: Any capsule producer must go through TimeCapsuleIssuerPort within the same UoW.
+      🔧 Quick fix: Inject an issuer and call issuer.issue_or_reuse(uow=..., dto=...).
+      📚 Reference: docs/spec/DATA_UOW.md, docs/spec/DATA_CAPSULES.md
+
+  VT001:
+    template: |
+      🏛️ Vector Transactions Judge: Detected unsupported asset_type
+      📋 asset_type: {asset_type}
+      💡 Suggestion: Extend the vector provider to handle this asset_type.
+      🔧 Quick fix: Add the corresponding route in the project's vector provider module.
+
+  VT002:
+    template: |
+      🏛️ Vector Transactions Judge: Detected unsupported capsule_kind
+      📋 capsule_kind: {capsule_kind}
+      💡 Suggestion: Extend the vector provider to handle this capsule_kind.
+      🔧 Quick fix: Add the corresponding route in the project's vector provider module.
+
+  VT003:
+    template: |
+      🏛️ Vector Transactions Judge: Detected event missing required fields
+      📌 Event: {event_name}
+      📋 Missing field: {field}
+      💡 Suggestion: Issuers must explicitly carry issuer + capsule_kind.
+      🔧 Quick fix: Vector logic must not infer issuers from DB lookups.

@@ -1,0 +1,34 @@
+# ==============================================================================
+# 🏛️ V2.0 - 智慧执法版
+#
+# 核心改革：
+# 1. 废除脆弱的`files`正则表达式，让工具自己决定审查范围。
+# 2. 解除对Mypy的束缚，允许其进行“全局侦察”，发挥最大威力。
+# ==============================================================================
+
+repos:
+  # Notebook 清理 (保持不变)
+  - repo: https://github.com/srstevenson/nb-clean
+    rev: 4.0.1
+    hooks:
+      - id: nb-clean
+        args:
+          - --remove-empty-cells
+          - --preserve-cell-metadata
+          - special
+          - --
+
+  # Ruff 格式化与 Lint - 使用本地 poetry 环境
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff-format
+        entry: poetry run ruff format
+        language: system
+        types: [python]
+
+      - id: ruff
+        name: ruff
+        entry: poetry run ruff check --fix --exit-non-zero-on-fix
+        language: system
+        types: [python]
