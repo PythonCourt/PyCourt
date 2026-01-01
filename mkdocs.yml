@@ -3,7 +3,7 @@ site_description: "A Code Court for Python: AST + rules based quality audit engi
 site_url: https://pythoncourt.com
 
 nav:
-  - Home: index.md
+  - Home: index.html
   - PyCourt Engine:
       - 总览: engine/index.md
       - CLI 使用: engine/cli.md
@@ -19,6 +19,7 @@ nav:
       - 示例法条 AC001: laws/ac001.md
   - Playbooks 战术手册:
       - 总览: playbooks/index.md
+      - TimeOS / TimeBank 实战案例: playbooks/timeos_case.md
   - 参与贡献: contribute.md
   - 更新日志: changelog.md
 

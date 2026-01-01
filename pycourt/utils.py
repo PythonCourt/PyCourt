@@ -3,13 +3,14 @@
 定位
 ====
 - 为各个 Law 实现提供统一的工具函数和基础类型；
-- 避免 law 模块直接依赖组合根 `tools.court.judge`，从而打破循环导入；
+- 避免 law 模块直接依赖组合根 `pycourt.judge`，从而打破循环导入；
 - 仅承载“法院内部通用基座”，不包含 ChiefJustice 或 CLI 入口逻辑。
 """
 
 from __future__ import annotations
 
 import ast
+import os
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Final
@@ -18,7 +19,8 @@ from typing import Final
 # 公共常量（Law 实现可安全依赖）
 # =========================
 
-LOGGER_NAME: Final[str] = __name__
+# 全局日志记录器名称，供 CLI / Judge / Laws 统一使用
+LOGGER_NAME: Final[str] = "pycourt"
 
 
 class ProjectFiles:
@@ -78,16 +80,20 @@ class Violation:
 
 
 def find_project_root() -> Path:
-    """定位并返回包含 pyproject.toml 的项目根目录。
+    """定位并返回**调用方工程**的项目根目录。
 
-    从当前文件向上遍历，直到找到包含项目配置文件（pyproject.toml）的目录。
+    当前实现约定：
 
-    异常：
+    - 从当前工作目录 (os.getcwd) 开始向上遍历父目录；
+    - 返回第一个包含 ``pyproject.toml`` 的目录；
+    - 若遍历至文件系统根仍未找到，则抛出 ``FileNotFoundError``。
 
-    FileNotFoundError：如果无法找到项目根目录。
+    这意味着：当 PyCourt 作为依赖被引入其他工程时，``find_project_root``
+    总是解析为**使用方工程**的根目录，而不是 PyCourt 包自身所在的仓库根。
     """
-    current_path = Path(__file__).resolve()
-    for parent in current_path.parents:
+
+    current = Path(os.getcwd()).resolve()  # noqa: PTH109
+    for parent in (current, *current.parents):
         if (parent / ProjectFiles.PYPROJECT_FILENAME).is_file():
             return parent
 

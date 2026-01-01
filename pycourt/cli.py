@@ -18,10 +18,48 @@ import sys
 from pathlib import Path
 
 from pycourt.config.judges_texts import get_courtroom_text, get_default_lang
+from pycourt.config.yaml_paths import exempt_yaml_path
 from pycourt.judge import ChiefJustice
 from pycourt.utils import LOGGER_NAME, Violation
 
 logger = logging.getLogger(LOGGER_NAME)
+
+
+_DEFAULT_PYCOURT_YAML_TEMPLATE = """# 🏛️ PyCourt 项目豁免配置 (pycourt.yaml)
+#
+# 此文件仅在当前仓库内生效，用于声明各法条在“文件/路径级别”的治外法权。
+# 你可以按需向下方的 `files` 列表中追加通配模式，例如：
+#   - "tests/**"       # 整个 tests 目录不审
+#   - "migrations/**"  # 数据库迁移脚本不审
+#   - "scripts/*.py"   # 某些脚本工具不审
+#
+# 路径匹配规则与 `fnmatch` 一致，常见模式包括：
+#   - "foo/bar.py"     精确匹配单个文件
+#   - "foo/**"         匹配目录下所有子文件/子目录
+#   - "**/tests/**"    匹配任意层级下的 tests 目录
+#
+# 若你希望完全关闭某条法条，也可以在命令行中使用 `--ignore CODE`，
+# 或者在 CI 脚本中直接不选择该法条。
+
+exemptions:
+  HC001:
+    files:
+      # - "tests/**"
+      # - "migrations/**"
+
+  LL001:
+    files:
+      # - "tests/**"
+
+  DI001:
+    files: []
+
+  # 你可以在此处按需追加其他法条，例如：
+  # DT001:
+  #   files: []
+  # SK001:
+  #   files: []
+"""
 
 
 def _build_arg_parser() -> argparse.ArgumentParser:
@@ -42,6 +80,9 @@ def _build_arg_parser() -> argparse.ArgumentParser:
 
     project_p = subparsers.add_parser("project", help="基于配置对整个项目进行静态审计")
     _configure_project_subparser(project_p)
+
+    init_p = subparsers.add_parser("init", help="在项目根初始化 pycourt.yaml 模板")
+    _configure_init_subparser(init_p)
 
     return parser
 
@@ -112,6 +153,16 @@ def _configure_project_subparser(parser: argparse.ArgumentParser) -> None:
         help="输出格式（human/json）",
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="详细日志输出")
+
+
+def _configure_init_subparser(parser: argparse.ArgumentParser) -> None:
+    """为 `pycourt init` 子命令挂载参数。"""
+
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="如已存在 pycourt.yaml，则强制覆盖生成模板",
+    )
 
 
 def _parse_codes(select: str | None) -> set[str] | None:
@@ -259,6 +310,27 @@ def _cmd_project(args: argparse.Namespace) -> int:
     return 1 if all_violations else 0
 
 
+def _cmd_init(args: argparse.Namespace) -> int:
+    """在项目根目录生成默认 `pycourt.yaml` 模板文件。
+
+    - 若文件不存在，则直接创建；
+    - 若文件已存在且未指定 ``--force``，则保持原文件不变并返回 0；
+    - 若指定 ``--force``，则覆盖写入默认模板内容。
+    """
+
+    target = exempt_yaml_path()
+    target_parent = target.parent
+    target_parent.mkdir(parents=True, exist_ok=True)
+
+    if target.exists() and not args.force:
+        logger.info("pycourt.yaml 已存在于 %s，跳过生成（使用 --force 可覆盖）", target)
+        return 0
+
+    target.write_text(_DEFAULT_PYCOURT_YAML_TEMPLATE, encoding="utf-8")
+    logger.info("已生成 PyCourt 默认配置文件: %s", target)
+    return 0
+
+
 def main() -> None:
     """PyCourt CLI 入口函数。
 
@@ -275,6 +347,8 @@ def main() -> None:
         code = _cmd_scope(args)
     elif args.command == "project":
         code = _cmd_project(args)
+    elif args.command == "init":
+        code = _cmd_init(args)
     else:  # pragma: no cover - 防御分支
         parser.print_help()
         code = 1
