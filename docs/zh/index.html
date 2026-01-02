@@ -360,7 +360,7 @@
       <!-- Hero -->
       <header class="hero">
         <div class="brand-mark">
-          <img src="../assets/pycourt-logo.svg" alt="PythonCourt logo" style="height: 96px;" />
+          <img src="../static/assets/pycourt-logo.svg" alt="PythonCourt logo" style="height: 96px;" />
         </div>
         <h1 class="hero-title">PythonCourt</h1>
         <p class="hero-tagline">
@@ -387,31 +387,25 @@
             将 <code>pycourt</code> 安装到你的 Python 项目环境中。
           </div>
         </div>
-
-        <div class="hero-install">
-          <div class="section-label">配置</div>
-          <div class="code-block">
-            <pre class="code"><code>pycourt init</code></pre>
-          </div>
-          <div class="code-caption">
-            在你的项目根目录中创建一个初始化的 <code>pycourt.yaml</code> 配置文件。
-          </div>
-        </div>
       </header>
 
       <main>
         <!-- What it does -->
         <section id="what">
-          <div class="code-block">
-            <div class="section-label">运行</div>
-            <pre class="code"><code> pycourt scope . </code></pre>
-          </div>
+          <h2>What PythonCourt Does？</h2>
           <div class="code-caption">
-            在你的项目中运行 PythonCourt 以审计代码并生成报告。
+            <p>
+            审计AI生成的代码，并报告发现的任何非法活动<br/>
+            保持您项目中的代码质量和一致性<br/>
+            赋能开发者，借助人工智能辅助编写更优质的代码
+            </p>
+            <a href="https://github.com/PythonCourt" target="_blank">
+            <strong>查看文档</strong>
+            </a>
           </div>
         </section>
-        <!-- Learners -->
-        <section id="learners">
+        <!-- Laws -->
+        <section id="laws">
           <h2>丰富的法规</h2>
           <p>
             <strong>对创建和修改的每个文件展开审计</strong>
@@ -659,12 +653,15 @@ exemptions:
                 <pre class="code"><code># pyproject.toml
 
 [tool.pycourt]
-# 参与CI/CD审计的“文明”地区。
+# 参与CI/CD审计的领土。
+# 跨域组件和模块审计集成。
 civilized_paths = [
-    "timeos/core",   # 已文明
-    # "timeos/engines", # 待文明
-    # "timeos/api",     # 被排除在此CI运行之外
-
+    "src/api",      # 文明
+    "src/business", # 文明
+    "src/services", # 文明
+    "src/infra",    # 文明
+    "src/core",     # 文明
+    # "tools",    # 不参与本次 CI 运行
 ]
 
 # 单一真实来源的覆盖阈值（%）

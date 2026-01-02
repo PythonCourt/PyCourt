@@ -180,10 +180,14 @@ def _filter_violations(
 
 
 def _setup_logging(verbose: bool) -> None:
-    if verbose:
-        logging.basicConfig(level=logging.INFO)
-    else:
-        logging.basicConfig(level=logging.WARNING)
+    """Configure logging for CLI runs.
+
+    默认以 INFO 级别输出摘要信息；当提供 ``-v/--verbose`` 时，
+    预留给将来的 DEBUG 级别日志使用。
+    """
+
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(level=level)
 
 
 def _violations_to_dict(v: Violation) -> dict[str, int | str]:
@@ -236,6 +240,7 @@ def _cmd_scope(args: argparse.Namespace) -> int:
     lang = get_default_lang()
 
     target = args.target
+    logger.info("🏛️ Starting PyCourt audit for scope: %s", target)
     violations = court.conduct_audit(target)
     violations = _filter_violations(violations, selected)
 

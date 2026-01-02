@@ -1,6 +1,10 @@
 ## 安装与快速上手
 
-PyCourt 已发布为独立的 Python 包，你可以通过 `pip` 或 `pipx` 安装：
+PyCourt 已发布为独立的 Python 包，你可以通过 `pip` 或 `pipx` 安装。
+
+当前版本在 Python **3.11–3.14** 上测试通过（开发主力环境为 3.14）。
+
+你可以通过以下命令安装：
 
 ```bash
 pip install pycourt
