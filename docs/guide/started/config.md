@@ -1,186 +1,185 @@
-# 配置指南：官方推荐模板
-PyCourt 的配置可以分成三层：项目自身的 `pyproject.toml`、项目根的 `pycourt.yaml`，以及 PyCourt 内部自带的法律配置 YAML。
+# 配置指南：让 PyCourt 为你服务
 
-本页给出一套可以直接 **复制粘贴** 的推荐模板，适合作为「第一次在真实项目里接入 PyCourt」的起点。
+> 目标：掌控你的 PyCourt ，和你的项目无缝集成。
 
----
-
-## 1. 配置全景：需要关心哪些文件？
-在一个普通的应用/服务仓库中，通常只需要维护下面三类配置：
-
-1. `pyproject.toml` 里的 `[tool.pycourt]`
-   - 声明 **哪些路径是“文明领土”**（需要被 PyCourt 严格审计）。
-   - 提供一个 **统一的覆盖率门槛** 给 CI 使用。
-2. 仓库根目录的 `pycourt.yaml`
-   - 记录「哪些文件/目录拥有治外法权」，即完全不受某些法条约束。
-   - 对应 CLI 子命令（`pycourt file/scope/project`）以及 Law 执行时的豁免视图。
-3. PyCourt 包内部的 YAML（一般不用改）
-   - `pycourt/yaml/config.yaml`：法条与家族的全局配置。
-   - `pycourt/yaml/judges_text.*.yaml`：中英文判决模板文案。
-   - 正常使用 PyCourt 时 **不需要修改** 这些文件，把它们当成“宪法法典库”即可。
-
-> 如果你只想快速上手 CLI，可以先看《安装与快速上手：3 步跑起来 PyCourt》，
-> 本页更偏向「在团队项目中如何稳妥落地」的配置视角。
+## 概述
+1. 初始化生成 `pycourt.yaml` 文件，获得文件级豁免配置能力
+2. 在`pyproject.toml` 添加 `[tool.pycourt]` 配置管辖范围
+3. 利用脚本编排审计内容和流程
 
 ---
 
-## 2. 推荐项目结构示例
-下面是一个常见的项目根目录布局（以作者自己的 TimeOS 为例），你可以在此基础上自由调整：
+## 基础：文件豁免配置
 
-```text
-/your-project
-  ├── pyproject.toml       # 包/依赖/测试/工具统一入口
-  ├── pycourt.yaml         # 项目级治外法权与法条豁免配置
-  ├── src/                 # 业务代码（示例路径，可换成 core/ app/ 等）
-  ├── tests/               # 测试代码
-  ├── tools/               # 这是你自己项目使用的工具
-  ├── qa.sh            # 全仓库质量体检脚本（参考 PyCourt 官方 qa.sh）
-  ├── qas.sh           # 子目录/模块级审计脚本
-  └── qaf.sh           # 单文件深度审计脚本
+### 1. 初始化配置文件
+
+在项目根执行：
+```bash
+pycourt init
 ```
-- 三个脚本放在根目录，运行的时少写一个路径，像这样：输入`./qa.sh`后回车即可。
+或者：
+```bash
+poetry run pycourt init
+```
+这会在当前工程根目录生成一个 pycourt.yaml 模板，里面有最基本的示例配置，你可以按需调整。
+你可以在这里管理某些法律的启发拓扑路径，告诉法官们应该在哪里开展工作，
+以及不适用某些法典的文件豁免，让他们免受 PyCourt 的审判。
 
-如果你不打算维护本地脚本，也可以直接在 CI / 本地命令行中调用：
+### 2. 常用配置说明
+阅读[法典清单](../../laws/index.md)，并将里你项目里免于审计的文件路径添加到 pycourt.yaml 里。
+简单示例：
 
-- `pycourt file path/to/foo.py`
-- `pycourt scope .`
+```yaml
+# 若不配置 laws 段，将使用 PyCourt 内置的默认结构拓扑（见 config.yaml），
+# 大多数中小项目可以先完全忽略本段，只关注下面的 exemptions。
+
+# =================
+# Law 家族启发拓扑配置
+# =================
+# 不同团队的目录习惯不同：路由、适配器、仓储、常量、向量 provider… 不一定都在默认的位置；
+# laws.bc001/uw001/vt001/pc001/di001 这些配置，就是在告诉各个法官：
+# “什么目录算路由层？”
+# “仓储根在哪？”
+# “常量仓在哪？”
+# “向量 provider 在哪？”
+# 它定义的是“应当重点关注的结构区域”，是审计的“地图”和“边界线”。
+# 这样相应法官才知道自己的工作范围在哪里。
+laws:
+  bc001:
+    router_dir_patterns:
+      - "api/routes/"
+    adapter_dir_patterns:
+      - "infra/adapters/**"
+    core_contract_module_suffixes:
+      - "core.base.types"
+      - "core.dto"
+    api_contract_module_suffixes:
+      - "api.http"
+
+  uw001:
+    infra_repo_subpath: "infra/database/repository"
+    infra_system_repo_subpath: "infra/database/repository/system"
+
+  vt001:
+    provider_search_pattern: "infra/vector/providers.py"
+
+  pc001:
+    core_constants_subpath: "core/constants/"
+
+  di001:
+    # 注意：此处的前缀/精确模块名应包含根包前缀（例如 "timeos.api."）。
+    # 若留空，则 DI001 将使用内置默认前缀：<root>.api.* 与 <root>.core.*。
+    api_allowed_prefixes: []
+    api_allowed_exact: []
+
+
+# ===================
+# Law 家族文件级豁免配置
+# ===================
+# exemptions.<CODE>.files 声明的是：即便按法条来看可能有风险，这些具体文件/路径这一次不要审；
+# 常见场景：迁移脚本、运维脚本、测试、特殊入口文件、技术债暂时难以清理的模块；
+# 当你重构、移动这些文件时，应该同步更新这里，保证豁免是“小而精确的白名单”，而不是一大片“永远不审的黑洞”。
+# 这一部分是你日常维护最多的区域：为具体文件/路径发放治外法权。
+
+exemptions:
+  AC001:
+    files: []
+
+  BC001:
+    files:
+      - "pycourt/**/*.py"
+      - "tests/**"
+
+    reasons:
+      "pycourt/**/*.py": "工具与脚手架脚本不直接暴露对外 API 或领域边界，允许使用基础类型与过程式参数，不强制 BC001 的 DTO 边界约束。"
+      "tests/**": "测试代码用于验证行为而非定义正式边界契约，允许直接使用基础类型和临时结构，避免 BC001 干扰测试可读性。"
+  DI001:
+    files:
+      - "pycourt/**"
+      - "tests/**"
+    reasons:
+      "tests/**": "测试代码用于验证行为而非定义正式边界契约，允许直接使用基础类型和临时结构，避免 DI001 干扰测试可读性。"
+      "pycourt/**": "PyCourt 本身作为法官工具集，其内部模块间依赖属于工具实现范畴，不适用 DI001 的约束。"
+
+```
+
+总结：
+
+- laws 字段是告诉 pycourt 你的审计工作在哪里进行；
+- exemptions字段是告诉 pycourt 对他们网开一面不要审计；
+- 刚开始建议采用默认配置，等项目跑起来后，再逐步添加，避免让不该豁免的文件逃过审判。
+- 你可以参考并借鉴我自己的项目 [豁免配置](exempt.md) ，帮助你理解如何设计你项目的豁免策略。
+
+**特别提醒** 
+- 只有你才拥有对此文件的修改权限，我们甚至建议你亲自将豁免文件填入对应法典，并注明豁免理由。
+- 除非你明确授权才允许 AI 操作，否则你应该命令禁止 AI 对该文件的执行权限。
+- AI 在执行任务过程中，你需要特别注意此文件的变更情况，一旦发现 AI 自主添加豁免，你需要立即询问缘由并与它展开讨论后做出是否豁免的决策。
 
 ---
 
-## 3. `pyproject.toml` 中的 `[tool.pycourt]` 推荐模板
-在项目的 `pyproject.toml` 中，新增一段最小可用配置：
+## 进阶：项目管理配置
+
+在 `pyproject.toml` 里添加 `[tool.pycourt]`
+
+示例：
 
 ```toml
 [tool.pycourt]
-# 所有已“净化”的文明领土路径将收录于此 —— 即你期望长期保持高质量的代码区。
-# 这里的路径相对于仓库根目录，可以是包名、目录名或更细的子路径。
 civilized_paths = [
-  "src",      # 推荐一开始就只学一个“主业务根目录“
-  # "src/core", # 项目发展后逐步细分
-  # "infra/adapters/" # 将抽象与实现作为一个系统来审计
+    "src/api",      # civilized
+    "src/business", # civilized
+    "src/services", # civilized
+    "src/infra",    # civilized
+    "src/core",     # civilized
+    # "tools",      # excluded from this CI run
 ]
-
-# 覆盖率门槛唯一真理源：
-# - 官方脚本会把它视为 CI 的 `fail_under`；
-# - 若不想在早期就卡死，可以先设为 60–80，后续再慢慢提高。
-coverage = 80
 ```
 
-推荐做法：
+建议将它放到`pyproject.toml`文末，因为你会经常来这里调整配置。
 
-- **先只纳入最核心的业务路径**（例如 `src` / `core` / `service` / `infra`），
-  等项目反馈稳定后，再逐步扩展到更多子模块；
-- 不要将测试目录 `tests/` 写在 `civilized_paths` 里：
-  官方 CI 读取逻辑会自动匹配审计目标对应的 `tests/**` 并将其排除在覆盖率统计路径之外。
+不建议把 tests 目录放到里面，下一节介绍。
 
-官方工具 `pycourt.config.read_toml` 会在 CI/脚本中统一解析这些字段：
+说明：
 
-- 从你工程项目的 `pyproject.toml` 里读取 `[tool.pycourt]`；
-- 计算出：
-  - `fail_under`：覆盖率阈值；
-  - `civilized_paths`：审计路径；
-  - `coverage_paths`：用于覆盖率收集的路径（自动排除 `tests/**`）。
-
-你可以在脚本中通过：
-
-```bash
-python -m pycourt.config.read_toml --for-ci
-```
-
-获取一份 JSON 结构的配置快照，然后交给 `pytest --cov` / `coverage` 等工具使用。
+- 声明 **哪些路径是“文明领土”**（需要被 PyCourt 严格审计）。
+- 提供一个 **统一的覆盖率门槛** 给 CI 使用。
+- 你可以通过**注释掉一行**的方式来适配你的开发节奏；
+- 你可以在这里很方便的**配置跨域组件和模块**的集成审计；
+- 你还可以把这个配置**纳入 CI/CD 管道**，自定义 PR 范围的审计；
+- 你需要用一个特别的脚本来消费这个配置，详见下一节。
 
 ---
 
-## 4. 项目根 `pycourt.yaml` 推荐模板
-`pycourt.yaml` 主要承担两件事：
+## 高阶：开发流程配置
+用 PyCourt Engine 驱动 shell 脚本，有效提升审计效率和自由度：
 
-1. 按法条代码（如 `HC001`/`DT001`/`DI001`）声明哪些文件/目录完全豁免；
-2. 为后续团队协作留下「为什么在这里开了一个洞」的文字注释。
+### 1. 文件级审计配置
+你可以从丰富的 [审计法典](../../laws/index.md)挑选你认为对代码质量和安全有帮助的法条，将他们进行编排后，对单个创建和修改过的文件进行审计，PyCourt 会将发现的违法行为和整改与修复建议，分别用人类和机器阅读的语言输出。方便你和 AI 合作时解决问题。
 
-一个最小但实用的模板示例：
+你可以参考我为自己项目设计的**[匕首](../../script/official/qaf.sh)**脚本。
 
-```yaml
-# pycourt.yaml — 项目级治外法权与豁免配置示例
+我集成了Mypy、Pyright、Bandit、Ruff，以便能通过一个命令，完成所有的审计项目，让文件彻底纯净。
+你可以根据自己的实际需求对它重新设计和编排，以符合你的开发习惯。
 
-exemptions:
-  HC001:
-    files:
-      - "tests/**"        # 测试目录允许更多硬编码与魔法数字
-      - "migrations/**"   # 数据库迁移脚本往往是一次性脚本
+### 2. 目录级审计配置
+你还可以设计并配置目录级别的审计，它能将 **匕首** 的能力同时应用在一个文件夹里的所有文件身上。
 
-  DT001:
-    files:
-      - "tests/**"        # 测试中允许直接使用 datetime.now() 等
+你可以参考我为自己项目设计的 [军刀](../../script/official/qas.sh) 脚本。
 
-  DI001:
-    files:
-      - "**/tests/**"     # 测试代码中允许更随意的依赖导入
-```
+我增加了自动探测审计目标 tests 文件的能力，对其执行静态审计后运行单元测试，因此不建议把 tests 目录添加到 [tool.pycourt]，否则会报错。
+军刀的设计有助于你批量审计一个目录并自动执行测试，有效提升开发效率。
 
-路径模式采用 `fnmatch` 风格通配：
+### 3. 模块级审计配置
+为跨域审计而特别设计，弥补匕首和军刀在审计范围方面的不足。
+它读取 `pyproject.toml` 里的 `[tool.pycourt]`信息，并调用军刀执行除测试以外的所有任务，然后自己跑单元和集成以及 E2E 测试，并对覆盖率是否达标进行审判。
 
-- `foo/bar.py`：精确匹配单个文件；
-- `foo/**`：匹配整个目录及其子目录；
-- `**/tests/**`：匹配任意层级下名为 `tests` 的目录。
+你可以参考我为自己项目设计的 [节仗](../../script/official/qa.sh) 脚本。
 
-推荐实践：
-
-- **从少量豁免开始**：优先只为测试目录和迁移脚本开豁免；
-- 每次新增豁免时，务必在注释里写明「业务原因」，避免将来无人敢删；
-- 若某个文件长期需要大量豁免，通常意味着可以抽象出一个更好的结构，
-  可以在 review/重构时重点关注。
+你可以通过节仗脚本自定义审计多个审计目标，这方便你对跨域组件和模块进行进行系统性审计和验收，它甚至可以代替远程 CI/CD ，跑完后，你可以放心的直接 PR 。
 
 ---
 
-## 5. 为团队准备一套 QA 脚本模板
-如果你希望像 PyCourt 自己一样，通过脚本来组织审计与测试，可以参考下面的思路：
+## 下一步
+当你完成这些配置后，你就已经掌控了你的代码质量和风格，接下来，你需要设计你与 AI 合作的方式与 [开发流程](runtime.md) 。
 
-1. 使用 `pycourt config.read_toml` 统一读取 `[tool.pycourt]`：
-   - 拿到 `coverage_paths`，交给 `pytest --cov` 或 `coverage run`；
-   - 拿到 `civilized_paths`，作为 `pycourt scope` 的默认审计范围。
-2. 根据用途拆分三个脚本：
-   - `qaf.sh`：单文件深度审计（传入单个 Python 文件路径，调用 `pycourt file`）。
-   - `qas.sh`：子树级审计（传入目录，调用 `pycourt scope <dir>`）。
-   - `qa.sh`：全仓库体检（对所有文明路径循环调用 `pycourt scope`，并串联测试/覆盖率）。
 
-一个极简的伪代码式示例（省略错误处理与平台兼容性）：
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-# 1. 从调用方 pyproject.toml 解析 CI 配置
-cfg_json=$(python -m pycourt.config.read_toml --for-ci)
-fail_under=$(printf '%s' "$cfg_json" | jq '.fail_under')
-coverage_paths=$(printf '%s' "$cfg_json" | jq -r '.coverage_paths[]' | tr '\n' ' ')
-
-# 2. 运行测试并收集覆盖率
-pytest --cov ${coverage_paths} --cov-fail-under=${fail_under}
-
-# 3. 对所有文明路径执行 PyCourt 审计
-for path in $(printf '%s' "$cfg_json" | jq -r '.civilized_paths[]'); do
-  pycourt scope "${path}"
-done
-```
-
-> 上面只是一个「思想模板」，真正落地时可以参考 PyCourt 作者为自己项目设计的：
-
-- [特战匕首](../arsenal/qaf.sh) ：对创建和修改的单个文件进行快速审计
-- [帝国军刀](../arsenal/qas.sh) ：用来侦查或审计单个目录并运行单元测
-- [皇帝节仗](../arsenal/qa.sh) ：调用军刀对跨域组件和模块进行综合验收
-
----
-
-## 6. 如何在团队中逐步推广？
-最后给出一条推荐路线，可以作为落地 PyCourt 的节奏参考：
-
-1. 在 `pyproject.toml` 中添加 `[tool.pycourt]`，只纳入最核心的 1–2 个路径；
-2. 在仓库根创建一份精简版 `pycourt.yaml`，只为测试与迁移脚本开豁免；
-3. 在本地开发机上先通过 `pycourt scope .` 熟悉输出，再决定哪些法条需要进入 CI；
-4. 为 CI 加上一条「非阻塞」的 PyCourt 审计（先不作为强制门槛，只输出报告）；
-5. 等团队熟悉之后，再将部分法条/覆盖率阈值升级为「必须通过」的质量红线。
-
-这样，你既可以享受 PyCourt 带来的架构反馈，又不会在早期就被自己的规则反噬。
-
-> 记住：PyCourt 是你的「最高法院」，不是你的敌人。
-> 规则应该帮助你写出更稳定的系统，而不是把团队吓跑。

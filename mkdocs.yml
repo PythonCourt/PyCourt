@@ -4,19 +4,17 @@ site_url: https://pythoncourt.com
 
 nav:
   - Home: index.html
-  - Guide 使用指南:
+  - 使用指南:
       - 概览: guide/started/index.md
       - 安装: guide/started/install.md
       - 配置: guide/started/config.md
       - 运行: guide/started/runtime.md
-      - 豁免: guide/started/exempt.md
       
-  - Laws 法条图鉴:
+  - 法条图鉴:
       - 概览: laws/index.md
-      - AC001: laws/ac001.md
-  - Arsenal 武库:
-      - 武库总览: arsenal/index.md
-      - 社区武器库: arsenal/community.md
+  - 武器库:
+      - 武库总览: script/official/index.md
+      - 社区武器库: script/community/index.md
 
 theme:
   name: material
