@@ -184,10 +184,13 @@ def _setup_logging(verbose: bool) -> None:
 
     默认以 INFO 级别输出摘要信息；当提供 ``-v/--verbose`` 时，
     预留给将来的 DEBUG 级别日志使用。
+
+    同时统一前缀为 ``PyCourt:``，避免默认 ``INFO:pycourt:`` 噪音，
+    更贴近“法院播报”的语气。
     """
 
     level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(level=level)
+    logging.basicConfig(level=level, format="PyCourt:%(message)s")
 
 
 def _violations_to_dict(v: Violation) -> dict[str, int | str]:
@@ -240,7 +243,7 @@ def _cmd_scope(args: argparse.Namespace) -> int:
     lang = get_default_lang()
 
     target = args.target
-    logger.info("🏛️ PyCourt 开始审计: %s", target)
+    # logger.info("🏛️ PyCourt 开始审计: %s", target)
     violations = court.conduct_audit(target)
     violations = _filter_violations(violations, selected)
 

@@ -171,9 +171,9 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    # 启用INFO日志当提供详细标志时
+    # 启用 INFO 日志当提供详细标志时，并统一使用 PyCourt 前缀。
     if args.verbose:
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level=logging.INFO, format="PyCourt:%(message)s")
 
     selected_codes = set(args.select.split(",")) if args.select else None
 
