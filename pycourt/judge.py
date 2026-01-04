@@ -45,7 +45,7 @@ logger = logging.getLogger(LOGGER_NAME)
 
 
 class _LawJudge(Protocol):
-    """Protocol for all law judges used by ChiefJustice.
+    """首席大法官使用的法官协议
 
     仅用于类型检查目的，约束每位法官都实现 ``investigate`` 接口。
     """
@@ -57,7 +57,7 @@ class _LawJudge(Protocol):
         lines: list[str],
         tree: ast.AST | None,
     ) -> list[Violation]:  # pragma: no cover - 类型检查辅助
-        """Inspect a single file and return all violations found."""
+        """检查单个文件并返回所有发现的违规项。"""
         ...
 
 
@@ -110,23 +110,21 @@ class ChiefJustice:
 
         # 6. 大法官的初始化：唯一法官 + 多条法律
         self.judge: list[_LawJudge] = [
-            TheDepInvLaw(self.config),  # DI001 - 依赖倒置（使用 CourtConfig）
-            TheUnitOfWorkLaw(
-                self.config
-            ),  # UW001 - Unit of Work 法官（胶囊发行链路强制UoW）
-            TheVectorTriggerLaw(self.config),
+            TheDepInvLaw(self.config),
+            TheUnitOfWorkLaw(self.config),
             TheHardcodingLaw(self.config),
-            TheAnyCastLaw(self.config),  # UD001/UD002/UD003 - 类型偷懒审查官
+            TheAnyCastLaw(self.config),
             TheLineLoopLaw(self.config),
             TheDocsStringLaw(self.config),
             TheBndCtrlLaw(self.config),
             TheObjectUsageLaw(self.config),
             TheTypeCheckingLaw(self.config),
             TheParamClassLaw(self.config),
-            TheSkillsUsageLaw(self.config),  # SK001 - 技能使用与 Skill ID 规范审查官
+            TheSkillsUsageLaw(self.config),
             TheInitNoReExpLaw(self.config),
-            TheDateTimeLaw(self.config),  # 时间法官（DT001）
-            TheTestPurityLaw(self.config),  # TP001 - 测试纯净度审查官
+            TheDateTimeLaw(self.config),
+            TheTestPurityLaw(self.config),
+            TheVectorTriggerLaw(self.config),
         ]
 
     def conduct_audit(self, target_dir: str) -> list[Violation]:

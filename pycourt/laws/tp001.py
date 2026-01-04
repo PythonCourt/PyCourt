@@ -1,7 +1,6 @@
 """🏛️ 测试纯净度审查官（TP001）
-
-本法官将原先的 Bash 脚本 ``tools/dev/scripts/check_test_purity.sh``
-迁移为基于 AST/文本扫描的 Python 法条实现，统一纳入最高法院体系。
+简介
+基于 AST/文本扫描的 Python 法条实现，统一纳入最高法院体系。
 
 职责概览
 - 纯净度审查：标记为 ``@pytest.mark.unit`` 的单元测试不得直接依赖 I/O 库
@@ -10,15 +9,15 @@
 - 真实度审查：拒绝仅做 "importlib + hasattr" 存在性检查而不调用实际行为的测试。
 
 使用方式
-- 通过 ``tools.court.judge.ChiefJustice`` 统一执行：
+- 通过 ``pycourt.judge.ChiefJustice`` 统一执行：
 
-  >>> from tools.court.judge import ChiefJustice
+  >>> from pycourt.judge import ChiefJustice
   >>> cj = ChiefJustice()
   >>> violations = cj.conduct_audit("tests")  # 其中包含 TP001 的裁决
 
 - 或在 CLI 中通过 ``--select TP001`` 仅执行本法条：
 
-  $ python -m tools.court.judge tests --select TP001
+  $ python -m pycourt.judge tests --select TP001
 """
 
 from __future__ import annotations
