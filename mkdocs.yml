@@ -1,4 +1,4 @@
-site_name: Python Court
+site_name: PythonCourt
 site_description: "A Code Court for Python: AST + rules based quality audit engine."
 site_url: https://pythoncourt.com
 
@@ -13,12 +13,17 @@ nav:
   - 法条图鉴:
       - 概览: laws/index.md
   - 武器库:
-      - 武库总览: script/official/index.md
-      - 社区武器库: script/community/index.md
+      - 官方下载: script/official/index.md
 
 theme:
   name: material
   language: zh
+  logo: static/assets/pycourt-logo.svg      # 顶部导航左侧的站点 Logo
+  favicon: static/assets/pycourt-logo.svg   # 浏览器标签页小图标
+  palette:
+    - scheme: default
+      primary: brown    # 临时与首页暖棕调对齐，具体色值由 brand.css 细化
+      accent: deep-orange
   features:
     - navigation.sections
     - navigation.tracking

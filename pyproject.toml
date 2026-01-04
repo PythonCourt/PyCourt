@@ -2,10 +2,13 @@
 name = "pycourt"
 version = "0.1.0"
 description = "Static architecture court for Python projects."
-authors = ["PytnonCourt Team <dev@timeos.cc>"]
+authors = ["PythonCourt Team <dev@pythoncourt.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [{ include = "pycourt" }]
+include = [
+  "pycourt/yaml/*.yaml",
+]
 homepage = "https://pythoncourt.com"
 
 [tool.poetry.dependencies]

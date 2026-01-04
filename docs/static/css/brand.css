@@ -1,15 +1,231 @@
-:root {
-  /* 标题加一点分量 */
-  --md-typeset-headline-font-weight: 700;
-  --md-typeset-font-weight: 700;          /* 正文字重略调粗一点 */
+/* 颜色系统：沿用你现在的主色，只做轻量定制 */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #4d4637;
+  --md-primary-fg-color: #f9f9f9;
+  --md-accent-fg-color: #ed6a13; /* 文档整体强调色（用于链接等） */
+  --md-code-bg-color: #252525;
 }
 
-/* 顶部站点标题稍微更粗一点 */
+:root {
+  --md-default-bg-color: #4d4637;
+  --md-primary-fg-color: #f9f9f9;
+  --md-accent-fg-color: #ed6a13; /* 文档整体强调色（用于链接等） */
+  --md-code-bg-color: #191919;
+}
+
+/* 整体背景统一，交给 MkDocs 自己做三栏布局 */
+html,
+body {
+  background-color: var(--md-default-bg-color);
+}
+
+/* 顶部导航栏：一条底边线就够了 */
+.md-header {
+  background-color: var(--md-default-bg-color);
+  border-bottom: 1px solid #6b6253;
+  box-shadow: none;
+}
+
 .md-header__title {
   font-weight: 700;
 }
 
-/* 侧边栏导航分组标题稍微加粗，条目保持正常 */
-.md-nav__title {
+/* 左侧文件目录 / 右侧段落 TOC：背景统一，分割线交给中间内容区域画 */
+.md-sidebar--primary,
+.md-sidebar--secondary {
+  background-color: var(--md-default-bg-color);
+}
+
+/* 侧边栏文字统一用白色，激活动作用“卡片背景”强调
+   注意：在移动端抽屉中，主导航是 .md-nav--primary，不挂在 .md-sidebar--primary 上 */
+.md-sidebar--primary .md-nav,
+.md-sidebar--secondary .md-nav,
+.md-nav--primary {
+  color: var(--md-primary-fg-color);
+}
+
+/* 基础 nav 链接：占满一行，预留圆角卡片空间 */
+.md-sidebar--primary .md-nav__link,
+.md-sidebar--secondary .md-nav__link,
+.md-nav--primary .md-nav__link {
+  color: var(--md-primary-fg-color) !important;
+  display: block;
+  padding: 0.35rem 0.75rem;
+  margin: 0.1rem 0.25rem;
+}
+
+/* 一级分类（章节）稍微粗一点 */
+.md-sidebar--primary .md-nav__item--section > .md-nav__link,
+.md-sidebar--primary .md-nav__item--nested > .md-nav__link,
+.md-nav--primary .md-nav__item--section > .md-nav__link,
+.md-nav--primary .md-nav__item--nested > .md-nav__link {
+  font-weight: 600;
+}
+
+/* 子文档缩进显示层级 */
+.md-sidebar--primary .md-nav__item .md-nav__item > .md-nav__link,
+.md-nav--primary .md-nav__item .md-nav__item > .md-nav__link {
+  padding-left: 1.75rem;
+  font-weight: 400;
+}
+
+.md-sidebar--primary .md-nav__item .md-nav__item .md-nav__item > .md-nav__link,
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item > .md-nav__link {
+  padding-left: 2.5rem;
+}
+
+/* 悬停：浅色卡片背景 */
+.md-sidebar--primary .md-nav__link:hover,
+.md-sidebar--secondary .md-nav__link:hover,
+.md-nav--primary .md-nav__link:hover {
+  background-color: rgba(0, 0, 0, 0.18);
+}
+
+/* 激活项：只有当前文档链接 <a> 使用卡片背景 + 左侧强调色条 */
+.md-sidebar--primary a.md-nav__link--active,
+.md-sidebar--secondary a.md-nav__link--active,
+.md-nav--primary a.md-nav__link--active {
+  background-color: rgba(0, 0, 0, 0.32);
+  box-shadow: inset 3px 0 0 var(--md-accent-fg-color);
+  color: var(--md-primary-fg-color) !important;
+}
+
+/* 侧边栏 / 抽屉里的结构标题（如 “使用指南”“法条图鉴”等）统一为白色 */
+.md-sidebar--primary .md-nav__title,
+.md-sidebar--secondary .md-nav__title,
+.md-nav--primary .md-nav__title {
+  color: var(--md-primary-fg-color) !important;
+}
+
+/* 中间内容区：去阴影，平铺，并负责画两条竖线 */
+.md-content {
+  background-color: var(--md-default-bg-color);
+  box-shadow: none;
+  border-radius: 0;
+  border-left: 1px solid #6b6253;
+  border-right: 1px solid #6b6253;
+}
+
+/* 正文与链接 */
+.md-typeset {
+  color: var(--md-primary-fg-color);
+}
+
+/* 文本中的链接：使用单独的暖橙色，与正文拉开一点对比 */
+.md-typeset a {
+  color: var(--md-accent-fg-color);
+  text-decoration: none;
+}
+
+.md-typeset a:hover {
+  color: #ffb347;
+  text-decoration: underline;
+}
+
+/* 链接里包裹的代码，保持代码风格而不是变成纯文字颜色 */
+.md-typeset a code {
+  color: #fed7aa;
+}
+
+/* 标题层级：颜色 + 粗细 */
+.md-typeset h1 {
+  color: var(--md-primary-fg-color);
+  font-weight: 800;
+  margin-top: 0.5em;
+  margin-bottom: 0.4em;
+}
+
+.md-typeset h2 {
+  color: #f9f9f9;
   font-weight: 700;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+}
+
+.md-typeset h3 {
+  color: #f9f9f9; /* 比正文亮一点，弱于 H2 */
+  font-weight: 600;
+  margin-top: 1.2em;
+  margin-bottom: 0.4em;
+}
+
+/* 代码：inline 与 block 分开配色 */
+/* 文本里的 `code` / 路径，高亮但不要喧宾夺主 */
+.md-typeset code {
+  background-color: #3a3327;   /* 比正文略深一点 */
+  color: #fed7aa;              /* 暖一点的代码/路径颜色 */
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+/* 块级代码：保持更深的底色，与正文区分开 */
+.md-typeset pre > code {
+  background-color: var(--md-code-bg-color);
+  color: var(--md-primary-fg-color);
+}
+
+/* （可选）提示块、表格稍微压暗一点保持一体感 */
+.md-typeset .admonition {
+  background-color: #af7009;
+  border-radius: 4px;
+}
+
+/* 引用块：略微收紧宽度，文字用次要颜色，左侧使用强调色竖线 */
+.md-typeset blockquote {
+  color: #e5e5e5; /* 比正文稍暗一点，区分层级 */
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--md-accent-fg-color) !important; /* 与链接和侧边激活条保持同一强调色 */
+  padding-left: 1em;
+  margin: 1em 0;
+}
+
+.md-typeset table:not([class]) {
+  background-color: #3a3327;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: #463f30;
+}
+
+/* 代码块复制按钮：只留 icon，去掉顶部色条背景 */
+.md-code__nav {
+  background: transparent !important;  /* 去掉那条色块背景 */
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* 页脚：颜色与整体背景对齐，去掉沉重的黑条感 */
+.md-footer {
+  background-color: var(--md-default-bg-color);
+  border-top: 1px solid #6b6253;
+  color: #cfcfcf;
+}
+
+.md-footer__inner,
+.md-footer-meta {
+  background: transparent;
+}
+
+.md-footer a {
+  color: var(--md-accent-fg-color);
+}
+
+.md-footer a:hover {
+  color: #ffb347;
+}
+
+/* 按钮本身保留主题的 icon 绘制，只去掉额外的边框/阴影 */
+.md-code__button {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.25rem !important; /* 可按需要再缩小 */
+  color: var(--md-primary-fg-color) !important; /* 让 icon 在深色背景上常亮可见 */
+}
+
+/* 悬停时仅略微增强亮度，不再出现整块高亮背景 */
+.md-code__button:hover,
+.md-code__button:focus-visible {
+  box-shadow: none !important;
+  color: #ffffff !important;
 }

@@ -105,7 +105,7 @@ print_success "所有疆域静态审查全面通过！"
 # ==============================================================================
 if [ "$ENABLE_TEST_PHASE" -eq 1 ]; then
   print_chapter_header "第三章：【律】帝国戎卫兵团军规审查"
-  poetry run python tools/court/judge.py tests --select TP001,TP002,TP003 \
+  poetry run python pycourt/judge.py tests --select TP001,TP002,TP003 \
     || { print_error "❌ 发现调用生产代码和虚假测试！军规审查失败！"; exit 1; }
   print_success "✅ 所有单元测试均符合帝国军规！"
 

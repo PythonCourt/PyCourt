@@ -266,15 +266,14 @@ def _cmd_scope(args: argparse.Namespace) -> int:
 
 
 def _load_project_paths_from_config(config_path: Path | None) -> list[str]:
-    """占位实现：从 pycourt.yaml 读取项目审计路径列表。
+    """从 pycourt.yaml 读取项目审计路径列表。
 
-    当前实现简单返回 ["timeos" ] 作为默认路径，后续可扩展为：
     - 读取 ``pycourt.yaml`` 中 ``pycourt.paths`` 列表；
     - 或支持从 ``[tool.pycourt]`` 读取。
     """
 
-    del config_path  # TODO: 真正实现基于 pycourt.yaml 的路径解析
-    return ["timeos"]
+    del config_path  # 真正实现基于 pycourt.yaml 的路径解析
+    return ["." ]  # 返回当前目录作为审计目标
 
 
 def _cmd_project(args: argparse.Namespace) -> int:

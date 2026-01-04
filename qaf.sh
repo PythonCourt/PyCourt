@@ -70,7 +70,7 @@ check_tool() {
 run_judges() {
     # 统一入口：对当前审计目标运行指定法条组合（逗号分隔的 CODE 列表）。
     local codes="$1"
-    poetry run python tools/pycourt/judge.py "$AUDIT_TARGET" --select "$codes"
+    poetry run python pycourt/judge.py "$AUDIT_TARGET" --select "$codes"
 }
 
 print_chapter_header "🗡️ 帝国特战匕首 V4.1 - 作战准备"

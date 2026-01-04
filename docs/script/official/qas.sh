@@ -193,7 +193,7 @@ if [ "$ENABLE_TEST_PHASE" -eq 1 ]; then
   else
       # --- 单元测试军规审查（仅在本次会发起演习时执行） ---
       print_sub_header "帝国戎卫兵团军规审查"
-      poetry run python tools/court/judge.py tests --select TP001,TP002,TP003 || { print_error "❌ 发现调用生产代码和虚假测试，军规审查失败！"; exit 1; }
+      poetry run python pycourt/judge.py tests --select TP001,TP002,TP003 || { print_error "❌ 发现调用生产代码和虚假测试，军规审查失败！"; exit 1; }
       print_success "✅ 单元测试纯净度通过"
 
       # 智能寻找关联测试目录
