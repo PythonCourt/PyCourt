@@ -81,7 +81,7 @@ run_ruff_format() {
 check_tool() {
     local cmd="$1"
     local desc="$2"
-    if ! command -v "$cmd" >/dev/null 2>&1; then
+    if ! poetry run "$cmd" --version >/dev/null 2>&1; then
         print_warning "缺少外部工具: $cmd ($desc)，将跳过对应审计步骤。"
         return 1
     fi
@@ -139,8 +139,8 @@ run_or_warn() {
 # --- 8. PyCourt 统一审计入口（Scope 级别）
 # --------------------------------------------------------------
 run_judges() {
-    local target="$1"
-    local codes="$2"
+    local codes="$1"
+    local target="$2"
     run_or_warn poetry run pycourt scope "$target" --select "$codes"
 }
 
@@ -164,15 +164,15 @@ run_static_audit_on_target() {
 
     # 禁止使用TYPE_CHECKING等手段引入循环依赖
     print_sub_header "1.1.1 循环依赖法庭 (TC001)"
-    run_judges "TC001"
+    run_judges "TC001" "$audit_target"
 
     # 禁止在门面层使用领域逻辑并聚合导出
     print_sub_header "1.1.2 门面纪律法庭 (RE001)"
-    run_judges "RE001,RE002,RE003"
+    run_judges "RE001,RE002,RE003" "$audit_target"
 
     # 禁止违反依赖倒置原则直接依赖具体实现
     print_sub_header "1.1.3 依赖倒置法庭 (DI001)"
-    run_judges "DI001"
+    run_judges "DI001" "$audit_target"
 
     # ---------------------------------------------------
     # 1.2 事务与边界：UoW / 边界 DTO / 向量触发协议
@@ -181,15 +181,15 @@ run_static_audit_on_target() {
 
     # 禁止违反 unit of work 原则的事务处理
     print_sub_header "1.2.1 仓库事务法庭 (UW001)"
-    run_judges "UW001,UW002,UW003,UW004"
+    run_judges "UW001,UW002,UW003,UW004" "$audit_target"
 
     # 禁止违反边界 DTO 规范的跨层数据传递
     print_sub_header "1.2.2 疆域边界法庭 (BC001)"
-    run_judges "BC001"
+    run_judges "BC001" "$audit_target"
 
     # 禁止违反向量触发协议的事件处理
     print_sub_header "1.2.3 向量触发法庭 (VT001)"
-    run_judges "VT001"
+    run_judges "VT001" "$audit_target"
 
     # ---------------------------------------------------
     # 1.3 类型与领域纪律：Any/dict/cast/object 滥用
@@ -198,19 +198,19 @@ run_static_audit_on_target() {
 
     # 禁止滥用鸭子类型、Any、cast 等破坏类型纯净度的行为
     print_sub_header "1.3.1 鸭子类型法庭 (AC001)"
-    run_judges "AC001,AC002,AC003"
+    run_judges "AC001,AC002,AC003" "$audit_target"
 
     # 禁止滥用通用对象类型（object）破坏领域纯净度的行为
     print_sub_header "1.3.2 鸭子类型法庭 (OU001)"
-    run_judges "OU001"
+    run_judges "OU001" "$audit_target"
 
     # 禁止滥用时间相关操作破坏领域纯净度的行为
     print_sub_header "1.3.3 时间漂移法庭 (DT001)"
-    run_judges "DT001"
+    run_judges "DT001" "$audit_target"
 
     # 禁止违反技能配置规范的行为
     print_sub_header "1.3.4 技能配置法庭 (SK001)"
-    run_judges "SK001"
+    run_judges "SK001" "$audit_target"
 
     # =======================================================================
     # 第二章：类型联邦调查局
@@ -224,7 +224,7 @@ run_static_audit_on_target() {
     # ---------------------------------------------------
     print_sub_header "2.1 Pyright 审查"
     if check_tool "pyright" "Python 静态类型检查器"; then
-        run_pyright "$AUDIT_TARGET"
+        run_pyright "$audit_target"
     else
         print_warning "跳过 Pyright 审查"
     fi
@@ -235,7 +235,7 @@ run_static_audit_on_target() {
     # ---------------------------------------------------
     print_sub_header "2.2 Mypy 复核"
     if check_tool "mypy" "Python 静态类型检查器"; then
-        run_mypy "$AUDIT_TARGET"
+        run_mypy "$audit_target"
     else
         print_warning "跳过 Mypy 审查。"
     fi
@@ -253,10 +253,19 @@ run_static_audit_on_target() {
     # ---------------------------------------------------
     print_sub_header "3. 安全稽查 (Bandit)"
     if check_tool "bandit" "安全审计工具 (Bandit)"; then
-        if [[ "$AUDIT_TARGET" == tests* ]]; then
-            run_bandit -q "$AUDIT_TARGET" -s B101
+        # 目录目标：递归扫描 (-r)；单文件：直接扫描。
+        if [ -d "$audit_target" ]; then
+            if [[ "$audit_target" == tests* ]]; then
+                run_bandit -q -r "$audit_target" -s B101
+            else
+                run_bandit -q -r "$audit_target"
+            fi
         else
-            run_bandit -q "$AUDIT_TARGET"
+            if [[ "$audit_target" == tests* ]]; then
+                run_bandit -q "$audit_target" -s B101
+            else
+                run_bandit -q "$audit_target"
+            fi
         fi
     else
         print_warning "跳过 Bandit 安全稽查。"
@@ -271,23 +280,23 @@ run_static_audit_on_target() {
 
     # 确保所有公共接口均有完整文档
     print_sub_header "4.1 文档字符串法庭 (DS001)"
-    run_judges "DS001,DS002"
+    run_judges "DS001,DS002" "$audit_target"
 
     # 检查代码复杂度，防止过度复杂化
     print_sub_header "4.2 代码复杂度法庭 (LL001)"
-    run_judges "LL001,LL002"
+    run_judges "LL001,LL002" "$audit_target"
 
     # 禁止字符串/数字等硬编码常量
     print_sub_header "4.3 硬编码法庭 (HC001)"
-    run_judges "HC001,HC004,HC005"
+    run_judges "HC001,HC004,HC005" "$audit_target"
 
     # 检查是否绕过RuleProvider机制的常量使用
     print_sub_header "4.4 可调参数法庭 (PC001)"
-    run_judges "PC001,PC002"
+    run_judges "PC001,PC002" "$audit_target"
 
     # 采用命名空间类型定义常量风格
     print_sub_header "4.5 常量风格法庭 (HC002)"
-    run_judges "HC002,HC003"
+    run_judges "HC002,HC003" "$audit_target"
 
     # =======================================================================
     # 第五章：环境署（清理战场）
@@ -298,11 +307,12 @@ run_static_audit_on_target() {
 
     print_sub_header "5. 清理战场 (Ruff)"
     if check_tool "ruff" "Python Lint & Format 工具 (Ruff)"; then
-        run_ruff_check "$AUDIT_TARGET" --fix
-        run_ruff_format "$AUDIT_TARGET"
+        run_ruff_check "$audit_target" --fix
+        run_ruff_format "$audit_target"
     else
         print_warning "跳过 Ruff 审查与格式化。"
     fi
+}
 
 
 # ==============================================================================

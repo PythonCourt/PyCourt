@@ -119,7 +119,7 @@ run_ruff_format() {
 check_tool() {
     local cmd="$1"
     local desc="$2"
-    if ! command -v "$cmd" >/dev/null 2>&1; then
+    if ! poetry run "$cmd" --version >/dev/null 2>&1; then
         print_warning "缺少外部工具: $cmd ($desc)，将跳过对应审计步骤。"
         return 1
     fi

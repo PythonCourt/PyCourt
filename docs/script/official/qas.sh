@@ -81,7 +81,7 @@ run_ruff_format() {
 check_tool() {
     local cmd="$1"
     local desc="$2"
-    if ! command -v "$cmd" >/dev/null 2>&1; then
+    if ! poetry run "$cmd" --version >/dev/null 2>&1; then
         print_warning "缺少外部工具: $cmd ($desc)，将跳过对应审计步骤。"
         return 1
     fi
@@ -148,8 +148,8 @@ run_judges() {
 # 审计内容编排与封装
 # ===============================================================================
 run_static_audit_on_target() {
-    local audit_target="$1"
-    print_chapter_header "第一阶段：帝国军刀 - 对【${audit_target}】进行静态审计"
+    local AUDIT_DIR="$1"
+    print_chapter_header "第一阶段：帝国军刀 - 对【${AUDIT_DIR}】进行静态审计"
 
     # =======================================================================
     # 第一章：架构生死线
@@ -224,7 +224,7 @@ run_static_audit_on_target() {
     # ---------------------------------------------------
     print_sub_header "2.1 Pyright 审查"
     if check_tool "pyright" "Python 静态类型检查器"; then
-        run_pyright "$AUDIT_TARGET"
+        run_pyright "$audit_target"
     else
         print_warning "跳过 Pyright 审查"
     fi
@@ -235,7 +235,7 @@ run_static_audit_on_target() {
     # ---------------------------------------------------
     print_sub_header "2.2 Mypy 复核"
     if check_tool "mypy" "Python 静态类型检查器"; then
-        run_mypy "$AUDIT_TARGET"
+        run_mypy "$audit_target"
     else
         print_warning "跳过 Mypy 审查。"
     fi

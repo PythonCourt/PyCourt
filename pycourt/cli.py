@@ -240,7 +240,7 @@ def _cmd_scope(args: argparse.Namespace) -> int:
     lang = get_default_lang()
 
     target = args.target
-    logger.info("🏛️ Starting PyCourt audit for scope: %s", target)
+    logger.info("🏛️ PyCourt 开始审计: %s", target)
     violations = court.conduct_audit(target)
     violations = _filter_violations(violations, selected)
 
@@ -273,7 +273,7 @@ def _load_project_paths_from_config(config_path: Path | None) -> list[str]:
     """
 
     del config_path  # 真正实现基于 pycourt.yaml 的路径解析
-    return ["." ]  # 返回当前目录作为审计目标
+    return ["."]  # 返回当前目录作为审计目标
 
 
 def _cmd_project(args: argparse.Namespace) -> int:
