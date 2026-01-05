@@ -243,7 +243,7 @@ def _cmd_scope(args: argparse.Namespace) -> int:
     lang = get_default_lang()
 
     target = args.target
-    # logger.info("🏛️ PyCourt 开始审计: %s", target)
+    # logger.info("🏛️ PyCourt 开始审计: %s", target)  # noqa: ERA001
     violations = court.conduct_audit(target)
     violations = _filter_violations(violations, selected)
 

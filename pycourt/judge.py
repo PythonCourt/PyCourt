@@ -179,7 +179,6 @@ def main() -> None:
 
     lang = get_default_lang()
 
-    logger.info(get_courtroom_text("supreme_court.start", lang=lang))
     court = ChiefJustice()
     violations = court.conduct_audit(args.target_dir)
 

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Powered by ASTs and rules to audit Python Code written with AI"
+      content="Powered by ASTs and rules to audit Python code written with or by AI"
     />
     <style>
       :root {
@@ -225,10 +225,22 @@
         text-align: left;
       }
 
-      .weapon-card {
+.weapon-card {
         padding: 16px 18px;
         border-radius: 8px;
         background: rgba(0, 0, 0, 0.08);
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        transition: background 0.15s ease, transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .weapon-card:hover {
+        text-decoration: none;
+        background: rgba(0, 0, 0, 0.16);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
       }
 
       .weapon-name {
@@ -392,11 +404,11 @@
       <main>
         <!-- What it does -->
         <section id="what">
-          <h2>What PythonCourt Does？</h2>
+          <h2>What PythonCourt does</h2>
           <div class="code-caption">
             <p>
-            Audit the code generation by AI and report any illegal activities found<br/>
-            Maintain code quality and consistency in your projects<br/>
+            Audit AI‑generated code and report any violations found<br/>
+            Help maintain code quality and consistency in your projects<br/>
             Empower developers to write better code with AI assistance
             </p>
             <!-- 直接跳转到 MkDocs 文档首页（使用指南 · 概览） -->
@@ -408,12 +420,12 @@
 
         <!-- Laws -->
         <section id="laws">
-          <h2>Rich judicial laws</h2>
+          <h2>A rich set of laws</h2>
           <p>
             <strong>Audit each file that has been created or modified.</strong>
           </p>
           <p>
-            A collection of Python code quality guidelines distilled from practices in collaborative development with AI.
+            A collection of Python code quality guidelines distilled from practical experience in collaborative development with AI.
           </p>
 
           <div class="law-columns">
@@ -465,6 +477,7 @@
                 <div class="law-name">- TheHardcodingLaw -</div>
                 <p class="law-summary">
                   Prohibits hard‑coded business literals and magic numbers outside constant modules, to avoid hiding configuration and cross‑engine contracts in scattered code.
+                </p>
               </div>
 
               <div class="law-article">
@@ -487,7 +500,7 @@
                 <div class="law-id">PC001</div>
                 <div class="law-name">- TheParamClassLaw -</div>
                 <p class="law-summary">
-                  Prohibit treating business adjustable rules as core constants and bypassing RuleProvider to directly access rule files to avoid confusing operational controls with technical constants.
+                  Prohibits treating adjustable business rules as core constants and bypassing the rule provider to directly access rule files, to avoid confusing operational controls with technical constants.
                 </p>
               </div>
 
@@ -551,13 +564,13 @@
 
         <!-- Flexible trial procedures -->
         <section id="weapons">
-          <h2>Flexible Trial Procedures</h2>
+          <h2>Flexible trial procedures</h2>
           <p>
-            <strong>Trial Procedures designed and arranged for different scenarios</strong>
+            <strong>Trial procedures designed and arranged for different scenarios.</strong>
           </p>
 
           <div class="weapon-columns">
-            <div class="weapon-card">
+            <a class="weapon-card" href="script/official/qaf/">
               <div class="weapon-name">Dagger · file</div>
               <p class="weapon-summary">
                 <strong>Quick trials for a single file, catching problems at the earliest stage.</strong>
@@ -567,9 +580,9 @@
                 <li>Co‑runs with Pyright, Mypy, Bandit and Ruff as needed.</li>
                 <li>Surfaces violations with short explanations and suggested fixes.</li>
               </ul>
-            </div>
+            </a>
 
-            <div class="weapon-card">
+            <a class="weapon-card" href="script/official/qas/">
               <div class="weapon-name">Saber · scope</div>
               <p class="weapon-summary">
                 <strong>Focused trials for a component or module tree.</strong>
@@ -579,9 +592,9 @@
                 <li>Optionally discovers and runs matching tests for the scope.</li>
                 <li>Supports non‑blocking mode when you only want an investigation report.</li>
               </ul>
-            </div>
+            </a>
 
-            <div class="weapon-card">
+            <a class="weapon-card" href="script/official/qa/">
               <div class="weapon-name">Scepter · project</div>
               <p class="weapon-summary">
                 <strong>Project‑wide trials that mirror your CI/CD pipeline.</strong>
@@ -592,7 +605,7 @@
                 <li>Drives unit and integration tests across the whole project scope.</li>
 
               </ul>
-            </div>
+            </a>
           </div>
         </section>
 

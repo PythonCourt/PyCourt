@@ -225,10 +225,22 @@
         text-align: left;
       }
 
-      .weapon-card {
+.weapon-card {
         padding: 16px 18px;
         border-radius: 8px;
         background: rgba(0, 0, 0, 0.08);
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        transition: background 0.15s ease, transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .weapon-card:hover {
+        text-decoration: none;
+        background: rgba(0, 0, 0, 0.16);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
       }
 
       .weapon-name {
@@ -556,7 +568,7 @@
           </p>
 
           <div class="weapon-columns">
-            <div class="weapon-card">
+            <a class="weapon-card" href="../script/official/qaf/">
               <div class="weapon-name">匕首 · 文件</div>
               <p class="weapon-summary">
                 <strong>单文件快速测试，将问题扼杀在摇篮。</strong>
@@ -566,9 +578,9 @@
                 <li>与Pyright、Mypy、Bandit和Ruff等专业工具协同运行。</li>
                 <li>发现违规问题并提供解释和修复建议。</li>
               </ul>
-            </div>
+            </a>
 
-            <div class="weapon-card">
+            <a class="weapon-card" href="../script/official/qas/">
               <div class="weapon-name">军刀 · 范围</div>
               <p class="weapon-summary">
                 <strong>针对组件或模块树的聚焦审计。</strong>
@@ -578,9 +590,9 @@
                 <li>智能匹配审计目标的测试代码并执行静态审计和单元测试。</li>
                 <li>利用非阻断模式对目标范围可能的违法行为进行侦查。</li>
               </ul>
-            </div>
+            </a>
 
-            <div class="weapon-card">
+            <a class="weapon-card" href="../script/official/qa/">
               <div class="weapon-name">权杖 · 项目</div>
               <p class="weapon-summary">
                 <strong>对项目进行本地化 CI/CD以快速 PR</strong>
@@ -590,7 +602,7 @@
                 <li>调用军刀对审计目标和测试代码进行静态审计。</li>
                 <li>驱动项目范围内的单元和集成测试。</li>
               </ul>
-            </div>
+            </a>
           </div>
         </section>
 

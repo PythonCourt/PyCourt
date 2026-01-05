@@ -13,7 +13,9 @@ nav:
   - 法条图鉴:
       - 概览: laws/index.md
   - 武器库:
-      - 官方下载: script/official/index.md
+      - 特战匕首: script/official/qaf.md
+      - 帝国军刀: script/official/qas.md
+      - 皇帝节仗: script/official/qa.md
 
 theme:
   name: material
