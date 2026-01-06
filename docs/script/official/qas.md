@@ -1,7 +1,7 @@
 
 # 帝国军刀
 
-[立即下载](qas.sh)
+[Download](qas.sh)
 
 ```bash
 #!/bin/bash
@@ -420,6 +420,6 @@ fi
 
 ---
 
-[立即下载](qas.sh)
+[Download](qas.sh)
 
 ---

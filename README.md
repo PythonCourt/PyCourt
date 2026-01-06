@@ -1,4 +1,164 @@
-# PyCourt
+# PythonCourt
+A Python code audit engine powered by AST analysis and rule systems,ensuring AI-generated code meets production-grade quality standards.
+
+> [简体中文](docs/zh/README.md)
+
+PythonCourt is a **“code court”** for Python projects.
+
+It audits Python code — especially AI‑generated code — against a growing set of architecture and style laws, and reports violations in human‑readable language (English / Simplified Chinese).
+
+The goal is to keep humans and AI coding under the same set of rules:
+
+- constrain dependencies between API / domain / infrastructure layers;
+- define which paths are “civilized territory” and which are out of jurisdiction;
+- make it clear what AI is allowed to change and what must remain under stricter control.
+
+PythonCourt is distributed as a **CLI tool** that you can plug into local workflows, CI/CD pipelines, or AI toolchains.
+
+---
+
+## Features
+
+- 🧩 **Law‑driven structural audits**
+  - A curated set of laws around architecture boundaries, dependency directions, constant management, type discipline, time usage, and more.
+  - Designed to work with your existing project layout; you don’t have to reorganise folders just to use it.
+
+- 🧭 **Civilized territories & exemptions**
+  - Use `pycourt.yaml` and `[tool.pycourt]` to declare:
+    - which paths are “civilized territory” that must pass audits;
+    - which files/paths are out of scope for the current round of trials.
+
+- ⚙️ **Friendly CLI & shell workflows**
+  - Subcommands for `file`, `scope`, `project`, `init`.
+  - Optional “weapons” (`Dagger` / `Saber` / `Scepter`) that orchestrate PyCourt with Pyright, Mypy, Bandit and Ruff, so you can drop them into your own repos.
+
+- 🤝 **Designed for human–AI collaboration**
+  - Human‑readable output with bilingual templates (EN / zh‑CN).
+  - Suitable as an “architecture and quality judge” for AI agents and tools.
+
+---
+
+## When to use PythonCourt
+
+PythonCourt is especially useful for:
+
+- medium to large Python projects developed together with AI assistants;
+- long‑lived backends/services where you worry about slow architectural decay;
+- teams that want a clear line between “code that can be changed freely” and “code that must obey stricter rules”.
+
+---
+
+## Installation & quick start
+
+PythonCourt is published as a standalone Python package and is tested on Python **3.11–3.14** (developed primarily on 3.14).
+
+Recommended installation:
+
+```bash
+# For multiple projects (recommended)
+pipx install pycourt
+
+# Or inside a single project’s virtualenv
+pip install pycourt
+
+# Or as a development dependency via poetry
+poetry add -D pycourt
+```
+
+### Minimal usage in any repo
+
+```bash
+cd /path/to/your-project
+
+# 1. Initialise project configuration (generates a pycourt.yaml template)
+pycourt init
+
+# 2. Run a static audit on the current directory
+pycourt scope . --format human --non-blocking
+```
+
+### CLI overview
+
+```bash
+pycourt file <path>      # audit a single Python file
+pycourt scope <target>   # audit a directory or single file
+pycourt project          # project‑level audit driven by config
+pycourt init             # generate a starter pycourt.yaml in your repo
+```
+
+For CI integration you can use `--format json` and parse the result.
+
+---
+
+## Weapons: Dagger / Saber / Scepter
+
+In addition to the core CLI, this repo ships three optional shell scripts (“weapons”) that show how to orchestrate PyCourt with other tools in real projects:
+
+- **Dagger · file (`qaf.sh`)** — fast trials for a single file
+  - Runs PyCourt + Pyright + Mypy + Bandit + Ruff on one file.
+  - Prints narrative output with clear explanations and suggested fixes.
+
+- **Saber · scope (`qas.sh`)** — focused trials for a directory or module tree
+  - Runs static audits over a “battlefield” scope:
+    - PyCourt laws (architecture, types, hard‑coding, etc.),
+    - type checkers (Pyright, Mypy),
+    - security checks (Bandit),
+    - style & formatting (Ruff),
+    - optional TEST‑series checks for test purity and optional pytest runs.
+
+- **Scepter · project (`qa.sh`)** — project‑wide “emperor’s review”
+  - Reads civilized paths and coverage threshold from `[tool.pycourt]` in `pyproject.toml`.
+  - Dispatches Saber over each territory.
+  - Can drive unit and integration tests with coverage as part of the same flow.
+
+These scripts are **reference workflows**. You can:
+
+- copy them into your own project and tweak which laws/tools to run;
+- use them as templates to design completely new weapons.
+
+For more details, see:
+
+- [Dagger](docs/script/official/qaf.md)
+- [Saber](docs/script/official/qas.md)
+- [Scepter](docs/script/official/qa.md)
+
+---
+
+## Configuration
+
+PythonCourt reads configuration from:
+
+- `pycourt.yaml` — project lawbook (laws in force, exemptions, etc.).
+- `[tool.pycourt]` in `pyproject.toml` — CI/CD‑oriented settings such as civilized paths and coverage thresholds.
+
+Example snippets are available in the docs and on the homepage.
+
+---
+
+## Documentation
+
+- English landing page & guide: see the GitHub Pages / site generated from `docs/`.
+- Simplified Chinese landing page (recommended for Chinese readers):
+  - `/zh/` on the deployed site, or
+  - `docs/zh/index.html` in this repository.
+
+---
+
+## Contributing
+
+Contributions are very welcome — this project is meant to evolve together with real teams using AI to write Python.
+
+- Report bugs or request features via GitHub Issues.
+- Send code or documentation improvements via Pull Requests.
+- Design your own laws or weapons and share them as examples.
+
+Please see the contributing guide under `docs/guide/community/contribute.md` for more details.
+
+---
+
+## License
+
+This project is open‑sourced under the [MIT License](LICENSE.md).
 
 > 为 Python 项目提供「代码法庭」级别的结构审计，让你和 AI 都在同一套游戏规则下写代码。
 
@@ -104,7 +264,7 @@ pycourt project       # 基于配置的项目级审计（会在后续版本逐�
 欢迎你一起塑造 PyCourt 的法庭规则与武器库：
 
 •  报告 Bug 或提出需求：请使用 GitHub Issues；
-•  提交代码 / 文档改进：请先阅读 CONTRIBUTING.md；
+•  提交代码 / 文档改进：请先阅读 [CONTRIBUTING.md](docs/guide/community/contribute.md)；
 •  想设计自己的法典或脚本：可以从  
   贡献指南（社区） 开始。
 

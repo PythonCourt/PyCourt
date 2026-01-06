@@ -167,6 +167,14 @@
         margin-right: auto;
       }
 
+      .inline-code {
+        background-color: #636363;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-family: monospace;
+        border: 1px solid #4d4637;
+      }
+
       main {
         margin-top: 40px;
       }
@@ -376,8 +384,8 @@
         </div>
         <h1 class="hero-title">PythonCourt</h1>
         <p class="hero-tagline">
-          The Code Court for Python<br/>
-          Powered by ASTs and rules to audit Python Code written with AI
+          A Python code audit engine powered by AST and Rule<br/>
+          Ensuring AI-generated code meets production-grade quality standards.
         </p>
 
         <div class="lang-switch">
@@ -396,7 +404,7 @@
             <pre class="code"><code>pip install pycourt</code></pre> <!-- 需要增加复制按钮 -->
           </div>
           <div class="code-caption">
-            Install <code>pycourt</code> into your Python environment.
+            Install PyCourt into your Python environment.
           </div>
         </div>
       </header>
@@ -404,28 +412,25 @@
       <main>
         <!-- What it does -->
         <section id="what">
-          <h2>What PythonCourt does</h2>
+          <h2>How PyCourt Works</h2>
           <div class="code-caption">
             <p>
-            Audit AI‑generated code and report any violations found<br/>
-            Help maintain code quality and consistency in your projects<br/>
-            Empower developers to write better code with AI assistance
+            Instruct the AI to audit its self-generated code with PyCourt <br/>
+            and rectify issues based on the audit report.
             </p>
             <!-- 直接跳转到 MkDocs 文档首页（使用指南 · 概览） -->
             <a href="guide/started/" target="_self">
-            <strong>PythonCourt Documentation</strong>
+            <strong>PyCourt Documentation</strong>
             </a>
           </div>
         </section>
 
         <!-- Laws -->
         <section id="laws">
-          <h2>A rich set of laws</h2>
+          <h2>Production-Grade Quality System</h2>
           <p>
-            <strong>Audit each file that has been created or modified.</strong>
-          </p>
-          <p>
-            A collection of Python code quality guidelines distilled from practical experience in collaborative development with AI.
+           A set of production-grade standards distilled from real-world project iterations,<br/>
+            designed to ensure long-term maintainability and robustness of your system.
           </p>
 
           <div class="law-columns">
@@ -564,46 +569,47 @@
 
         <!-- Flexible trial procedures -->
         <section id="weapons">
-          <h2>Flexible trial procedures</h2>
+          <h2>Designed Audit Strategies</h2>
           <p>
-            <strong>Trial procedures designed and arranged for different scenarios.</strong>
+            Provides carefully designed audit strategies for three distinct development scenarios.
           </p>
 
           <div class="weapon-columns">
             <a class="weapon-card" href="script/official/qaf/">
-              <div class="weapon-name">Dagger · file</div>
+              <div class="weapon-name">Dagger: File</div>
               <p class="weapon-summary">
-                <strong>Quick trials for a single file, catching problems at the earliest stage.</strong>
+                <strong>Immediate purification, zero debt.</strong>
               </p>
               <ul class="weapon-points">
+                <li>Performs static audit on a single '.py' file.</li>
                 <li>Customize which laws to apply and in what order.</li>
                 <li>Co‑runs with Pyright, Mypy, Bandit and Ruff as needed.</li>
-                <li>Surfaces violations with short explanations and suggested fixes.</li>
+                <li>Discover violations and provide explanations and suggested fixes</li>
               </ul>
             </a>
 
             <a class="weapon-card" href="script/official/qas/">
-              <div class="weapon-name">Saber · scope</div>
+              <div class="weapon-name">Saber: Directory</div>
               <p class="weapon-summary">
-                <strong>Focused trials for a component or module tree.</strong>
+                <strong>Batch purification, no collateral damage.</strong>
               </p>
               <ul class="weapon-points">
-                <li>Runs static audits on a per‑folder, per‑scope basis.</li>
-                <li>Optionally discovers and runs matching tests for the scope.</li>
-                <li>Supports non‑blocking mode when you only want an investigation report.</li>
+                <li>Performs static audits on all files within a folder.</li>
+                <li>Discovers associated test code, performs a static audit on it, and runs the unit tests.</li>
+                <li>Investigation mode to capture all violations and plan remediation.</li>
               </ul>
             </a>
 
             <a class="weapon-card" href="script/official/qa/">
-              <div class="weapon-name">Scepter · project</div>
+              <div class="weapon-name">Scepter: Domain</div>
               <p class="weapon-summary">
-                <strong>Project‑wide trials that mirror your CI/CD pipeline.</strong>
+                <strong>Cross‑domain integrity, one‑click acceptance.</strong>
               </p>
               <ul class="weapon-points">
-                <li>Reads audit regions and Coverage from <code>pyproject.toml</code>.</li>
-                <li>Invoke Saber to perform static audit on audit objectives and test code.</li>
+                <li>Performs integrated audit for a logical component across directories.</li>
+                <li>Invokes Saber to perform static audits on audit objectives and test code.</li>
                 <li>Drives unit and integration tests across the whole project scope.</li>
-
+                <li>Start a smooth journey in PR and CI/CD.</li>
               </ul>
             </a>
           </div>
@@ -611,70 +617,64 @@
 
         <!-- Config-driven courtroom -->
         <section id="config">
-          <h2>Config‑Driven Courtroom</h2>
+          <h2>Customize Your Courtroom</h2>
           <p>
-            Let <code>pycourt.yaml</code> define the laws, and
-            <code>pyproject.toml</code> define how trials run.
+            Define the laws and the trial procedures<br/>
+            Build a complete quality governance system tailored to your project.
           </p>
 
           <div class="config-grid">
-            <div class="config-text">
-              <h3>pycourt.yaml — project lawbook</h3>
+           <div class="config-text">
+            <h3>Your Project Lawbook</h3>
               <p>
-                Decide which laws are in force for this repository, how strict
-                they are, and which files are outside the court’s jurisdiction.
-                You can bootstrap a starter lawbook with
-                <code>pycourt init</code> and then edit it by hand.
+                Grant strategic exemptions to respect your architecture.<br/>
               </p>
-              <ul class="feature-list">
-                <li>Enable or disable individual laws.</li>
-                <li>Tune thresholds and options per law.</li>
-                <li>Declare central exemptions for tools, tests or migrations.</li>
-              </ul>
-            </div>
+            <ul class="feature-list">
+              <li>Enable or disable individual laws.</li>
+              <li>Tune thresholds and options per law.</li>
+              <li>Grant strategic exemptions: e.g., exempt the `bootstrap.py` from `DI001` to respect Dependency Inversion.</li>
+              <li>Run <code class="inline-code">pycourt init</code> and then edit it by hand.</li>
+            </ul>
+          </div>
 
             <div class="config-code">
               <div class="code-block">
-                <div class="section-label">pycourt.yaml</div>
                 <pre class="code"><code># pycourt.yaml
 laws:
   ll001:
     enabled: true
-    max_function_lines: 60
-  dt001:
-    enabled: true
+    max_function_lines: 50
 
 exemptions:
-  LL001:
+  DI001:
     files:
-      - "tools/**"
-      - "tests/helpers/**"</code></pre>
+      - "src/di/**"</code></pre>
               </div>
             </div>
           </div>
 
           <div class="config-grid" style="margin-top: 32px;">
             <div class="config-text">
-              <h3>pyproject.toml — trial procedures</h3>
+              <h3>Your Project Quality Sovereignty</h3>
               <p>
-                Describe how project‑wide trials integrate with your CI/CD:
-                which parts of the codebase count as "civilized" and what
-                coverage bar they must meet.
+                Declare the scope of the production code, and accept the review by PyCourt.
+                
               </p>
               <ul class="feature-list">
-                <li>Declare which paths belong to the civilized territory audited in CI/CD.</li>
+                <li>Map your civilized territory by architectural and dependency.</li>
+                <li>Map scattered components to civilized paths.</li>
                 <li>Use a single source of truth for the coverage threshold.</li>
-                <li>Keep Dagger/Saber shell scripts separate while centralising CI settings here.</li>
+                <li>Uncomment a path to start auditing that layer.</li>
+                <li>No comments left means a purified component.</li>
+                <li>Now, PR with confidence.</li>
+                
               </ul>
             </div>
 
             <div class="config-code">
               <div class="code-block">
-                <div class="section-label">pyproject.toml</div>
                 <pre class="code"><code># pyproject.toml
-
 [tool.pycourt]
-# Territories that participate in CI/CD audits.
 # Audit of cross-domain components and modules.
 civilized_paths = [
     "src/api",      # civilized
@@ -695,51 +695,40 @@ coverage = 85</code></pre>
         <!-- Community -->
         <section id="community">
             <h2>Community & Discussion</h2>
-            <p>
-            A small marketplace for laws, weapons and lawbooks — built by people
-            who code with AI every day.
-            </p>
+            <p><strong>Stop struggling alone. Start advancing together.</strong></p>
+            <p>As a beginner learning to code with AI, I was constantly wrestling with the quality.</p> 
+            <p>I built PyCourt—a final method to turn the situation around.</p> 
+            <p>If you have ever had the same doubts, welcome to join the PythonCourt community.</p>
 
             <h3>Use & report back</h3>
-
-                <p>Try Dagger, Saber or Scepter on a real project.</p>
-                <p>Note which laws feel too harsh or too soft for your team.</p>
-                <p>Open an Issue to share what worked, what failed, and what surprised you.</p>
-
+                <p>Try to use PyCourt in your project and give feedback on your experience. <br/> 
+                I will be very grateful that you have taught me more.</p>
 
             <h3 style="margin-top: 24px;">Design & publish</h3>
-
-                <p>Design your own weapons from existing laws and share the story behind them.</p>
-                <p>Publish snippets of your <code>pycourt.yaml</code> / <code>pyproject.toml</code> as examples.</p>
-                <p>Contribute preset weapons or example lawbooks via PRs to the PythonCourt org.</p>
-
+                <p>Improve existing laws or design entirely new weapons.</p>
+                <p>Publish your work so it can benefit others.</p>
 
             <h3 style="margin-top: 24px;">Discuss & plan</h3>
+                <p>Propose new laws, weapons, or AI workflows. </p>
+                <p>Let's discuss how to achieve rapid, high‑quality growth—together.</p>
 
-                <p>Use Discussions to talk about new laws, teaching modes and AI workflows.</p>
-                <p>File Issues for bugs, false positives or missing configuration knobs.</p>
-                <p>Help prioritise the roadmap by sharing what you need most from the courtroom.</p>
-
-
-            <p style="margin-top: 20px;">
-            Start a trial, design a weapon, or open a case here:</p>
+            <h3 style="margin-top: 24px;">Ready to team up?</h3>
+            <p>Start a trial, design a weapon, or open a case here:<br>
             <a href="https://github.com/PythonCourt" target="_blank">
-            PythonCourt organization
-            </a>
+            PythonCourt organization</a>
             —
             <a href="https://github.com/PythonCourt/pycourt" target="_blank">
-            core pycourt repository
-            </a>
+            core pycourt repository</a>
         </p>
         </section>
       </main>
 
       <footer>
-        <div>© 2025 PythonCourt. 
-        Open‑source and community‑driven.</div>
+      <div>© 2025 PythonCourt. Open‑source and community‑driven.</div>
         <div>
-          Code on
-          <a href="https://github.com/PythonCourt" target="_blank">GitHub</a>.
+        <a href="https://github.com/PythonCourt" target="_blank">GitHub</a>
+        ·
+        <a href="https://github.com/PythonCourt/pycourt/blob/main/LICENSE.md" target="_blank">MIT License</a>
         </div>
       </footer>
     </div>

@@ -1,6 +1,6 @@
-# 皇帝节仗
+# PyCourt 武器库 - 皇帝节仗
 
-[理解下载](qa.sh)
+[Download](qa.sh)
 
 ```bash
 #!/bin/bash
@@ -233,3 +233,9 @@ print_chapter_header "终章：胜利宣言"
 print_success "帝国统一审计全面通过！代码值得信赖."
 print_sub_header "可以放心推送了！"
 ```
+
+---
+
+[Download](qa.sh)
+
+---
