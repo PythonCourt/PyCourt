@@ -75,4 +75,4 @@ PyCourt 会：
 
 - [完善配置](config.md) 
 - [了解法典](../../laws/index.md)
-- [使用脚本](../../script/index.md)
+- [使用脚本](../../script/official/index.md)
