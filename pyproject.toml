@@ -2,15 +2,18 @@
 name = "pycourt"
 version = "0.1.0"
 description = "Static architecture court for Python projects."
-authors = ["PytnonCourt Team <dev@timeos.cc>"]
+authors = ["PythonCourt Team <dev@pythoncourt.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [{ include = "pycourt" }]
+include = [
+  "pycourt/yaml/*.yaml",
+]
 homepage = "https://pythoncourt.com"
 
 [tool.poetry.dependencies]
-# 支持Python3.14
-python = "=3.14"
+# Runtime: support Python 3.11 and above (developed and tested on 3.14).
+python = ">=3.11,<4.0"
 pydantic = ">=2.9.0,<3.0.0"
 PyYAML = ">=6.0.0,<7.0.0"
 
@@ -26,7 +29,8 @@ build-backend = "poetry.core.masonry.api"
 # ============================
 
 [tool.ruff]
-# 按最低支持版本 (3.14) 检查语法与内置类型
+# Linting is configured for Python 3.14 syntax/features, while runtime
+# compatibility covers 3.11 and above.
 target-version = "py314"
 line-length = 88
 exclude = ["stubs/**", "tests/**/__pycache__/**"]

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh">
   <head>
     <meta charset="utf-8" />
     <title>PythonCourt – The Code Court for Python</title>
@@ -166,6 +166,14 @@
         margin-left: auto;
         margin-right: auto;
       }
+      .inline-code {
+        background-color: #3a3327;
+        color: #fed7aa;  
+        padding: 0.1em 0.35em;
+        border-radius: 4px;
+        font-family: monospace;
+        border: 1px solid #3a3327;
+      }
 
       main {
         margin-top: 40px;
@@ -225,10 +233,22 @@
         text-align: left;
       }
 
-      .weapon-card {
+.weapon-card {
         padding: 16px 18px;
         border-radius: 8px;
         background: rgba(0, 0, 0, 0.08);
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        transition: background 0.15s ease, transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .weapon-card:hover {
+        text-decoration: none;
+        background: rgba(0, 0, 0, 0.16);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
       }
 
       .weapon-name {
@@ -360,12 +380,12 @@
       <!-- Hero -->
       <header class="hero">
         <div class="brand-mark">
-          <img src="../assets/pycourt-logo.svg" alt="PythonCourt logo" style="height: 96px;" />
+          <img src="../static/assets/pycourt-logo.svg" alt="PythonCourt logo" style="height: 96px;" />
         </div>
         <h1 class="hero-title">PythonCourt</h1>
         <p class="hero-tagline">
-          Python 代码法院<br />
-          由ASTs和规则审计使用AI编写的Python代码
+          基于 AST 分析和 Rule 系统的 Python 代码审计引擎<br/>
+          确保AI生成的代码符合生产级质量标准。
         </p>
 
         <div class="lang-switch">
@@ -381,20 +401,10 @@
         <div class="hero-install">
           <div class="section-label">安装</div>
           <div class="code-block">
-            <pre class="code"><code>pip install pycourt</code></pre> <!-- 需要增加复制按钮 -->
+            <pre class="code"><code>pip install pycourt</code></pre>
           </div>
           <div class="code-caption">
-            将 <code>pycourt</code> 安装到你的 Python 项目环境中。
-          </div>
-        </div>
-
-        <div class="hero-install">
-          <div class="section-label">配置</div>
-          <div class="code-block">
-            <pre class="code"><code>pycourt init</code></pre>
-          </div>
-          <div class="code-caption">
-            在你的项目根目录中创建一个初始化的 <code>pycourt.yaml</code> 配置文件。
+            将 PyCourt 安装到你的 Python 项目环境中。
           </div>
         </div>
       </header>
@@ -402,22 +412,24 @@
       <main>
         <!-- What it does -->
         <section id="what">
-          <div class="code-block">
-            <div class="section-label">运行</div>
-            <pre class="code"><code> pycourt scope . </code></pre>
-          </div>
+          <h2>如何工作</h2>
           <div class="code-caption">
-            在你的项目中运行 PythonCourt 以审计代码并生成报告。
+            <p>
+            要求 AI 使用 PyCourt 审计自己生成的代码<br/>
+            并按照审计报告进行整改和修复。
+            </p>
+            <!-- 直接跳转到中文文档首页（使用指南 · 概览） -->
+            <a href="../guide/started/" target="_self">
+            <strong>查看文档</strong>
+            </a>
           </div>
         </section>
-        <!-- Learners -->
-        <section id="learners">
-          <h2>丰富的法规</h2>
-          <p>
-            <strong>对创建和修改的每个文件展开审计</strong>
+        <!-- Laws -->
+        <section id="laws">
+          <h2>生产级质量体系</h2>
           </p>
           <p>
-            从与 AI 合作开发的真实实践中提炼出的不断增长的工程规则集合。
+            从真实项目迭代中提炼、确保系统长期可维护性与健壮性的生产级规范。
           </p>
 
           <div class="law-columns">
@@ -555,118 +567,116 @@
 
         <!-- Flexible trial procedures -->
         <section id="weapons">
-          <h2>灵活的审判程序</h2>
+          <h2>精心设计的审计策略</h2>
           <p>
-            <strong>支持为不同场景而设计和编排审计工具</strong>
+            <strong> 为三种不同开发场景提供精心设计的审计策略</strong>
           </p>
 
           <div class="weapon-columns">
-            <div class="weapon-card">
-              <div class="weapon-name">匕首 · 文件</div>
+            <a class="weapon-card" href="../script/official/qaf/">
+              <div class="weapon-name">匕首：文件</div>
               <p class="weapon-summary">
-                <strong>单文件快速测试，将问题扼杀在摇篮。</strong>
+                <strong>即时净化，不留后患</strong>
               </p>
               <ul class="weapon-points">
-                <li>自定义设计采用哪些法律以及审判顺序和流程。</li>
+                <li>对单个 '.py' 文件进行静态审计。</li>
+                <li>自定义使用的法条以及审判顺序和流程。</li>
                 <li>与Pyright、Mypy、Bandit和Ruff等专业工具协同运行。</li>
                 <li>发现违规问题并提供解释和修复建议。</li>
               </ul>
-            </div>
+            </a>
 
-            <div class="weapon-card">
-              <div class="weapon-name">军刀 · 范围</div>
+            <a class="weapon-card" href="../script/official/qas/">
+              <div class="weapon-name">军刀：目录</div>
               <p class="weapon-summary">
-                <strong>针对组件或模块树的聚焦审计。</strong>
+                <strong>批量净化，避免遗漏。</strong>
               </p>
               <ul class="weapon-points">
                 <li>对目标范围内的每个文件进行静态审计。</li>
                 <li>智能匹配审计目标的测试代码并执行静态审计和单元测试。</li>
-                <li>利用非阻断模式对目标范围可能的违法行为进行侦查。</li>
+                <li>侦查模式获取目标范围的所有违法行为以便制定整改方案。</li>
               </ul>
-            </div>
+            </a>
 
-            <div class="weapon-card">
-              <div class="weapon-name">权杖 · 项目</div>
+            <a class="weapon-card" href="../script/official/qa/">
+              <div class="weapon-name">权杖：领域</div>
               <p class="weapon-summary">
-                <strong>对项目进行本地化 CI/CD以快速 PR</strong>
+                <strong>跨域模块，一键验收</strong>
               </p>
               <ul class="weapon-points">
-                <li>从 <code>pyproject.toml</code>读取审计目标和测试覆盖率阈值。</li>
+                <li>对跨领域的一个逻辑组件进行综合审计。</li>
                 <li>调用军刀对审计目标和测试代码进行静态审计。</li>
                 <li>驱动项目范围内的单元和集成测试。</li>
+                <li>安心的开启 CI/CD和 PR 之旅。</li>
               </ul>
-            </div>
+            </a>
           </div>
         </section>
 
         <!-- Config-driven courtroom -->
         <section id="config">
-          <h2>配置驱动的法庭</h2>
-          <p>
-            通过 <code>pycourt.yaml</code> 定义法律，通过<code>pyproject.toml</code> 定义审判如何运行。
-          </p>
+          <h2>定制你的法庭</h2>
+          <p>定义法律和审判程序，为项目量身定制质量治理体系。</p>
 
           <div class="config-grid">
             <div class="config-text">
-              <h3>pycourt.yaml — 项目法典</h3>
+              <h3>你的项目法典</h3>
               <p>
-                决定适用于仓库的法律，它们的严格程度以及哪些文件可以被豁免。您可以使用启动法律手册进行引导。
-                你可以运行 <code>pycourt init</code> 后手动编辑它。
+                根据你的项目架构给予战略豁免
               </p>
               <ul class="feature-list">
-                <li>启用或禁用单个法律。</li>
+                <li>启用或禁用某条法律。</li>
                 <li>调整法律阈值和选项。</li>
                 <li>为特别文件声明豁免。</li>
+                <li>运行 <code class="inline-code">pycourt init</code> 生成并手动编辑它</li>
               </ul>
             </div>
 
             <div class="config-code">
               <div class="code-block">
-                <div class="section-label">pycourt.yaml</div>
                 <pre class="code"><code># pycourt.yaml
 laws:
   ll001:
     enabled: true
-    max_function_lines: 60
-  dt001:
-    enabled: true
+    max_function_lines: 50
 
 exemptions:
-  LL001:
+  DI001:
     files:
-      - "tools/**"
-      - "tests/helpers/**"</code></pre>
+      - "src/di/**" # 组合根不适用 DI001</code></pre>
               </div>
             </div>
           </div>
 
           <div class="config-grid" style="margin-top: 32px;">
             <div class="config-text">
-              <h3>pyproject.toml — 审判程序</h3>
+              <h3>你项目的质量主权</h3>
               <p>
-                描述项目范围内的审判如何与您的CI/CD集成，哪些代码库部分算作“文明”的，以及它们必须达到的覆盖率标准。
+                声明生产代码的疆域，并接受 PyCourt 完整审查。
               </p>
               <ul class="feature-list">
-                <li>声明哪些路径属于在CI/CD中被审计的文明区域。</li>
-                <li>使用单一来源的覆盖率阈值。</li>
-                <li>保持Dagger/Saber shell脚本独立，同时将CI设置集中在这里。</li>
+                <li>根据架构层次和依赖方向绘制你的文明领土。</li>
+                <li>将散乱组件映射到文明路径（并注释掉它们）。</li>
+                <li>使用单一的真实来源作为覆盖阈值。</li>
+                <li>取消路径的注释开始对该层进行审计。</li>
+                <li>没有注释意味着你获得了一个纯净的组件。</li>
+                <li>现在，自信地进行PR。</li>
               </ul>
             </div>
 
             <div class="config-code">
               <div class="code-block">
-                <div class="section-label">pyproject.toml</div>
                 <pre class="code"><code># pyproject.toml
-
 [tool.pycourt]
-# 参与CI/CD审计的“文明”地区。
+# 跨域组件和模块审计集成。
 civilized_paths = [
-    "timeos/core",   # 已文明
-    # "timeos/engines", # 待文明
-    # "timeos/api",     # 被排除在此CI运行之外
-
+    "src/api",      # 文明
+    "src/business", # 文明
+    "src/services", # 文明
+    "src/infra",    # 文明
+    "src/core",     # 文明
+    # "tools",    # 不参与本次 CI 运行
 ]
-
 # 单一真实来源的覆盖阈值（%）
 coverage = 85</code></pre>
               </div>
@@ -677,37 +687,33 @@ coverage = 85</code></pre>
         <!-- Community -->
         <section id="community">
             <h2>社区 & 讨论</h2>
-            <p>
-            一个Python法典和武器的市场——由使用 Python 编程的人们创建、共享和改进
-            </p>
-
+            <p><strong>“停止独自挣扎，开始共同进步“。</strong></p>
+            <p>作为一名始用AI编程的代码新手，我一直在与代码质量作斗争。</p> 
+            <p>我创建了PyCourt——一个扭转局势的方法。</p> 
+            <p>如果你曾经有过同样的困惑，欢迎加入 PythonCourt 社区。</p>
             <h3>使用并反馈</h3>
 
-                <p>尝试在真实项目中使用匕首、军刀或权杖</p>
-                <p>注意哪些法律对您的项目来说过于严格或过于宽松</p>
-                <p>打开一个 Issue 来分享哪些工作有效、哪些失败以及哪些让您感到惊讶</p>
+                <p>尝试在你的项目中使用 PyCourt，并分享你的使用体验。</p>
+                <p>我将非常感激你教会我更多。</p>
 
             <h3 style="margin-top: 24px;">设计与发布</h3>
 
-                <p>对现有法典进行优化或者设计全新的法典</p>
-                <p>创建新的武器以支持不同的审计场景和工作流程</p>
-                <p>通过 PRs 向 PythonCourt 组织贡献法典或武器，并分享背后的故事</p>
-
+                <p>改善或设计全新的法典或者武器</p>
+                <p>发布你的作品，让它造福他人。</p>
 
             <h3 style="margin-top: 24px;">讨论与规划</h3>
-                <p>使用讨论来谈论新法律、教学模式和AI工作流程</p>
-                <p>文件问题，用于报告错误、误报或缺失配置旋钮</p>
-                <p>通过分享您从法庭中需要最多的功能来帮助优先考虑路线图</p>
+                <p>提出新的法律、武器或人工智能工作流程。</p>
+                <p>让我们讨论如何快速实现高质量成长。</p>
 
 
-            <p style="margin-top: 20px;">
-            开始使用，设计武器或在此开启</p>
+            <h3 style="margin-top: 24px;">准备好组队了吗？</h3>
+            <p>在这里开始试用、设计武器或则加入我们:<br>
             <a href="https://github.com/PythonCourt" target="_blank">
-            PythonCourt 组织贡献预设武器或示例法典。
+            PythonCourt 组织
             </a>
             —
             <a href="https://github.com/PythonCourt/pycourt" target="_blank">
-            核心 pycourt 仓库
+            pycourt 仓库
             </a>
         </p>
         </section>
@@ -719,6 +725,7 @@ coverage = 85</code></pre>
         <div>
           Code on
           <a href="https://github.com/PythonCourt" target="_blank">GitHub</a>.
+          <a href="https://github.com/PythonCourt/pycourt/blob/main/LICENSE.md" target="_blank">MIT License</a>
         </div>
       </footer>
     </div>

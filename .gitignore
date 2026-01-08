@@ -506,3 +506,6 @@ Thumbs.db
 # 文档内部工具
 docs/git
 docs/_build/
+
+# Local release helper script (not tracked in repo)
+release.sh

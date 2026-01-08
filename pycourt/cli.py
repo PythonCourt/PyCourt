@@ -180,10 +180,17 @@ def _filter_violations(
 
 
 def _setup_logging(verbose: bool) -> None:
-    if verbose:
-        logging.basicConfig(level=logging.INFO)
-    else:
-        logging.basicConfig(level=logging.WARNING)
+    """Configure logging for CLI runs.
+
+    默认以 INFO 级别输出摘要信息；当提供 ``-v/--verbose`` 时，
+    预留给将来的 DEBUG 级别日志使用。
+
+    同时统一前缀为 ``PyCourt:``，避免默认 ``INFO:pycourt:`` 噪音，
+    更贴近“法院播报”的语气。
+    """
+
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(level=level, format="PyCourt:%(message)s")
 
 
 def _violations_to_dict(v: Violation) -> dict[str, int | str]:
@@ -236,6 +243,7 @@ def _cmd_scope(args: argparse.Namespace) -> int:
     lang = get_default_lang()
 
     target = args.target
+    # logger.info("🏛️ PyCourt 开始审计: %s", target)  # noqa: ERA001
     violations = court.conduct_audit(target)
     violations = _filter_violations(violations, selected)
 
@@ -261,15 +269,14 @@ def _cmd_scope(args: argparse.Namespace) -> int:
 
 
 def _load_project_paths_from_config(config_path: Path | None) -> list[str]:
-    """占位实现：从 pycourt.yaml 读取项目审计路径列表。
+    """从 pycourt.yaml 读取项目审计路径列表。
 
-    当前实现简单返回 ["timeos" ] 作为默认路径，后续可扩展为：
     - 读取 ``pycourt.yaml`` 中 ``pycourt.paths`` 列表；
     - 或支持从 ``[tool.pycourt]`` 读取。
     """
 
-    del config_path  # TODO: 真正实现基于 pycourt.yaml 的路径解析
-    return ["timeos"]
+    del config_path  # 真正实现基于 pycourt.yaml 的路径解析
+    return ["."]  # 返回当前目录作为审计目标
 
 
 def _cmd_project(args: argparse.Namespace) -> int:

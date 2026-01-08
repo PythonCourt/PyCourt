@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 import tomllib
 from collections.abc import Mapping
@@ -34,7 +33,7 @@ def _find_calling_project_root() -> Path:
     调用方工程自身的 ``pyproject.toml``，而不是 PyCourt 包的配置。
     """
 
-    current = Path(os.getcwd()).resolve()
+    current = Path.cwd().resolve()
     for parent in (current, *current.parents):
         if (parent / ProjectFiles.PYPROJECT_FILENAME).is_file():
             return parent

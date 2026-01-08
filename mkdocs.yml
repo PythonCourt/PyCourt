@@ -1,39 +1,38 @@
-site_name: Python Court
+site_name: PythonCourt
 site_description: "A Code Court for Python: AST + rules based quality audit engine."
 site_url: https://pythoncourt.com
 
 nav:
   - Home: index.html
-  - PyCourt Engine:
-      - 总览: engine/index.md
-      - CLI 使用: engine/cli.md
-      - 配置指南: engine/config.md
-  - Arsenal 武库:
-      - 武库总览: arsenal/index.md
-      - 特战匕首 qaf.sh: arsenal/qaf.md
-      - 帝国军刀 qas.sh: arsenal/qas.md
-      - 皇帝节仗 qa.sh: arsenal/qa.md
-      - 社区武器库: arsenal/community.md
-  - Laws 法条图鉴:
+  - 使用指南:
+      - 概览: guide/started/index.md
+      - 安装: guide/started/install.md
+      - 配置: guide/started/config.md
+      - 运行: guide/started/runtime.md
+      
+  - 法条图鉴:
       - 概览: laws/index.md
-      - 示例法条 AC001: laws/ac001.md
-  - Playbooks 战术手册:
-      - 总览: playbooks/index.md
-      - TimeOS / TimeBank 实战案例: playbooks/timeos_case.md
-  - 参与贡献: contribute.md
-  - 更新日志: changelog.md
+  - 武器库:
+      - 特战匕首: script/official/qaf.md
+      - 帝国军刀: script/official/qas.md
+      - 皇帝节仗: script/official/qa.md
 
 theme:
   name: material
   language: zh
+  logo: static/assets/pycourt-logo.svg      # 顶部导航左侧的站点 Logo
+  favicon: static/assets/pycourt-logo.svg   # 浏览器标签页小图标
+  palette:
+    - scheme: default
+      primary: brown    # 临时与首页暖棕调对齐，具体色值由 brand.css 细化
+      accent: deep-orange
   features:
     - navigation.sections
     - navigation.tracking
-    - toc.integrate
     - content.code.copy
 
 extra_css:
-  - css/brand.css
+  - static/css/brand.css
 
 markdown_extensions:
   - admonition
