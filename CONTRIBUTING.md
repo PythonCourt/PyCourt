@@ -1,157 +1,107 @@
-# 参与共创：一起经营这座代码法院
+# 🏛️ Join the Federation: Co‑Create the Programming Civilization of the AI Era
 
-> 目标：告诉你，除了“使用 PyCourt”，你还能怎样一起把这座法院经营得更好。
-
-PyCourt 还在很早期的阶段，很多配置、法典和工作流都带着我个人的习惯。但一座真正可持续的“代码法院”，应该由更多开发者一起共建。
-
-这篇文档不是要你立刻写代码，而是告诉你：**你已经有资格发言和参与**，无论是用法建议、脚本分享，还是一句“这里能不能简单一点”。
+You're not just invited to contribute—you're invited to become a **legislator and enforcer**, helping define what "civilized code" means when AI is at the keyboard.
 
 ---
 
-## 我们欢迎什么样的贡献？
+## 1. 🏛️ **Legislative Council**  
+### Define the Laws, Name the Crimes
 
-不一定非要写代码，下面这些都是非常有价值的贡献：
+This is PyCourt's most powerful body. Found a new breed of "nasty code" AI keeps producing? Propose a law.
 
-- **使用反馈与“案件报告”**
-  - 你在真实项目中使用 PyCourt 时遇到的困惑、痛点、绕不过去的边角场景；
-  - “这条法典在我们项目里太严了 / 太松了”的具体例子；
-  - “我按文档做了 X，结果实际体验是 Y”。
+#### How to Participate:
+- **Draft a Bill**: Open an Issue with `[New Law]` prefix. Describe the violation pattern.
+- **Earn Immortality**: If adopted, the law carries **your name** (e.g., *Smith's Law*) in the permanent Codex.
+- **Become a Lifetime Legislator**: Pass 3 successful bills → join the **Lifetime Legislative Council** with voting rights on future roadmaps.
 
-- **武器脚本与工作流（匕首 / 军刀 / 节仗的衍生品）**
-  - 你为自己项目编排的 shell 脚本、CI 工作流；
-  - 针对某类项目（单体服务 / 微服务 / 数据工程）的专用流程；
-  - 能把 PyCourt 跟你常用工具（pytest、mypy、ruff、Bandit…）拧成“一把节杖”的实践。
-
-- **法典设计与改进（高级玩家）**
-  - 新的 Law 想法：项目里长期隐性但没人管的坏味道；
-  - 已有 Law 的判定边界：哪些地方应该更精确、哪些地方应该更宽容；
-  - 对 `config.yaml` / `pycourt.yaml.laws` 的结构性调整建议。
-
-- 文档、经验与故事
-  - 包括针对单条 Law 的“法条解读”与“判例故事”（可以放在 `docs/laws/AC001.md` 或 `docs/exper/` 下）。
-  - 使用 PyCourt 改造一个老项目的实战记录；
-  - 如何设计一份合理的豁免策略（exemptions）；
-  - 博客文章、读书笔记式的法典解读；
-  - 翻译与本地化。
+**Active Legislation Topics**:  
+👉 [View open law proposals](https://github.com/PythonCourt/pycourt/issues?q=label%3A%22new+law%22)
 
 ---
 
-## 从哪里开始：先当“原告”和“证人”
+## 2. ⚖️ **Supreme Court**  
+### Correct Injustices, Refine Justice
 
-对于大多数第一次参与的人，**最简单的方式就是开一个 Issue**：
+Our auditing algorithms aren't perfect. Sometimes they deliver false convictions.
 
-1. 去 PyCourt 的 GitHub 仓库，创建新的 Issue（Bug / Discussion / Idea 都可以）。
-2. 尽量提供这些信息：
-   - 你的大致项目类型（Web 服务 / 数据处理 / CLI 工具…）；
-   - 使用的 Python 版本、PyCourt 版本；
-   - 你运行的命令（例如 `pycourt scope . --non-blocking`）；
-   - 预期行为 vs 实际行为；
-   - 如果是法典相关问题，可以贴一小段最小复现代码片段。
+#### How to Participate:
+- **File an Appeal**: Issue with `[Appeal]` tag if PyCourt misjudged your code.
+- **Interpret the Law**: Help us refine detection logic—make justice more precise.
+- **Review Case Law**: Study past appeals to understand the court's evolving jurisprudence.
 
-你不需要一开始就给出“完美的解决方案”，**清晰的问题和上下文本身就是非常重要的贡献**。
-
----
-
-## 分享你的武器脚本与工作流
-
-如果你已经为自己项目设计了好用的脚本（不管是不是基于匕首/军刀/节仗），欢迎分享出来，帮助更多人少走弯路。
-
-可以按这样的步骤来：
-
-1. **先开一个 Issue / Discussion**
-   - 简单介绍：这个脚本是为了解决什么场景（例如“单服务 + Git staged 文件审计”）；
-   - 说明它基于哪些工具（PyCourt、本地 mypy、CI 服务等）。
-
-2. **准备一个可分享的脚本或示意**
-   - 最简单的方式：提供一个独立的 shell 脚本，或者在你的仓库里放好，并在文档中链接；
-   - 若你愿意把脚本直接加入 PyCourt 文档，可以在 PR 中：
-     - 在 `docs/script/index.md` 中增加一个条目；
-     - 将脚本放入约定目录（例如 `docs/script/community/your-script.sh`），便于区分“官方武器”和“社区武器”。
-
-3. **在 PR 描述中说明：**
-   - 适用场景；
-   - 使用前置条件（例如需要 pipx 安装哪些工具）；
-   - 预期的输出和失败行为（非 0 退出码 / 报告 JSON 等）。
-
-我会优先合并**说清楚场景和边界**的脚本，而不是“什么都想管但解释不清楚”的脚本。
+**Recent Appeals**:  
+👉 [Review the docket](https://github.com/PythonCourt/pycourt/issues?q=label%3Aappeal)
 
 ---
 
-## 参与法典设计和修改（高级玩家通道）
+## 3. ⚔️ **Arms Development Division**  
+### Forge Weapons, Cross‑Platform Sovereignty
 
-法典是 PyCourt 的“宪法条文”，对使用者影响很大，所以我们会比较保守地修改。
+We need craftspeople skilled in **Rust / Go / Python CLI**.
 
-如果你有法典级的想法，建议按这个路径来：
+#### The Mission:
+Our current shell scripts (Dagger/Saber/Scepter) are prototypes. Help us **reforge them into cross‑platform binary artifacts**—bringing the empire's protection to Windows frontiers and beyond.
 
-1. **先用自然语言写下来**
-   - 这一条法典在解决什么具体问题？  
-     > “阻止 infra 反向依赖 api”；  
-     > “防止业务仓储散落在项目各处”；
-   - 为什么现有的 Law / 配置做不到或不够好？
-   - 是否会给真实项目带来大量“无法修复的红线”？
+#### Current Campaigns:
+- **Project Excalibur**: Rust‑based CLI for lightning‑fast audits
+- **Project Longbow**: Go service for CI/CD integration  
+- **Project Roundtable**: Unified configuration across ecosystems
 
-2. **开一个 Design Issue**
-   - 用“提案”的形式描述你的 Law 设想或修改建议；
-   - 给出 1–2 个简化后的代码示例（合法 / 违法各一段）；
-   - 对难以自动判断的灰色区域给出“先不支持”的边界说明。
-
-3. **技术实现相关的期望（在你准备 PR 时再考虑）**
-   - Law 的实现应该：
-     - 尽量保持**配置有限**：大多数项目只需要改少数几个路径模式；
-     - 提供清晰的人类判决文案（由 `CourtConfig.get_judge_template` 驱动）；
-     - 自带测试样例，覆盖常见合法 / 违法 / 灰色情况；
-   - 修改现有 Law 时，若会影响大量已有项目，需要在 Issue 中讨论和记录 trade-off。
-
-如果你不确定自己的想法是否适合作为 Law，可以先用 “exper 经验文章 + 脚本” 的形式分享出来，等共识成熟后再法典化。
+**Join the Forge**:  
+👉 [Arms development discussion](https://github.com/PythonCourt/pycourt/discussions/categories/arms-development)
 
 ---
 
-## 写文档、经验与故事
+## 4. 🌍 **Diplomatic Corps**  
+### Cultural Translation & International Exchange
 
-如果你更擅长写字，而不是直接写代码，这一块就是你的领域。
+We're searching for **code metaphors across cultures**.
 
-一些可以考虑的题目：
+#### The Cultural Challenge:
+- Translate Chinese metaphors like "暗度陈仓" (Trojan Horse tactics) or "狐假虎威" (Potemkin tests) into your culture's humor
+- Propose how your language would describe these "code crimes" creatively
+- Help build the **first global archive of programming cultural humor**
 
-- “我们是如何用 PyCourt 清理一个 5 年历史的单体服务的？”
-- “如何设计一份既严格又不惹人烦的 `exemptions` 策略？”
-- “我为公司项目编排的一把节杖：从本地开发到 CI 的完整流程。”
-- “从某条 Law 入手，理解某个架构理念（例如边界管理、依赖倒置、时间法则）。”
+#### Active Diplomatic Missions:
+🎭 **[#CulturalCodeCrimes](https://github.com/PythonCourt/pycourt/discussions/1)** – The ongoing translation challenge  
+🏛️ **[Architecture‑First Development](https://github.com/PythonCourt/pycourt/discussions/2)** – Philosophical foundations of code order
 
-贡献方式可以是：
-
-- 在 `docs/exper/` 下增加一篇新的经验文档；
-- 在 `docs/blog/` 下增加一篇故事或反思；
-- 或者在 Issue 中贴上你的外部博客链接，只要你愿意公开分享，都很欢迎。
-
----
-
-## 提交 PR 前的小 checklist
-
-当你准备好提交 PR（不管是脚本、文档还是 Law 修改），可以用这份清单自检一下：
-
-- [ ] 本地能跑通基础审计：
-  - 至少在 PyCourt 自身仓库里跑过一次匕首/军刀/节仗（视改动范围而定）；
-- [ ] 测试能通过（如果改动影响了核心逻辑）；
-- [ ] 文档有对应更新：
-  - 新的 Law / 行为变更，有相应说明；
-  - 新的脚本/工作流，有简要使用说明；
-- [ ] 没有引入密钥、密码等敏感信息；
-- [ ] 对“豁免配置”的修改有清晰理由（`reasons`）而不是一刀切。
-
-如果你不清楚要不要跑哪些脚本，直接在 PR 里写明你的不确定点，我们可以一起补充。
+**Become a Cultural Ambassador**:  
+👉 [Join the diplomatic discussions](https://github.com/PythonCourt/pycourt/discussions/categories/special-planning)
 
 ---
 
-## 行为与风格：既严肃又好玩
+## 🎭 The Federation's Current Cultural Vibe
 
-PyCourt 的主题是“法院”，但我希望社区氛围是：
+### What We're Building Together:
+- **A living legal system** for AI‑generated code
+- **Cross‑cultural programming metaphors** that make quality discussions fun
+- **Tools that embody philosophy**, not just automation
+- **A community where "sustainable" beats "fast"**
 
-- **严肃对待代码质量和架构**：  
-  - 尽量用事实和示例说话，而不是“我感觉这样比较优雅”；
-  - 明确 trade-off：我们愿意为某种可读性 / 灵活性牺牲多少严格性。
+### Our Active Experiments:
+1. **The Great Translation Challenge** – Turning Chinese code crimes into global humor
+2. **Weapon Forging** – From shell scripts to polished tools  
+3. **Law‑Making** – Defining what "production‑grade" actually means with AI
+4. **Justice Refinement** – Making audits accurate, not just strict
 
-- **对人保持宽容和好奇**：  
-  - 不嘲笑初学者的项目结构；
-  - 也不迷信某一种“唯一正确的架构风格”。
+---
 
-如果你愿意把 PyCourt 视作你项目里的“代码法院”，那这里也欢迎你把自己的经验、看法和习惯带进来，一起让这座法院变得既靠谱又有趣。
+## 🚀 Your First Step into the Federation
+
+Pick your entry point:
+
+| Your Interest | First Action | Where to Go |
+|---------------|--------------|-------------|
+| **You've found a new AI code smell** | Draft a law | `[New Law]` Issue |
+| **PyCourt misjudged your code** | File an appeal | `[Appeal]` Issue |
+| **You want to build better tools** | Join arms development | Discussions → Arms Development |
+| **You love cultural wordplay** | Propose a translation | Discussions → #CulturalCodeCrimes |
+| **You think about code philosophy** | Join architecture debates | Discussions → Special Planning |
+
+---
+
+**Welcome to the experiment.**  
+This isn't about fixing bugs—it's about **defining what deserves to exist** in the AI‑assisted future.
+
+*The Federation is not a project. It's a conversation about the future of coding.*

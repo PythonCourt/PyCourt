@@ -14,8 +14,8 @@
 ![License](https://img.shields.io/github/license/PythonCourt/pycourt)
 
 [![Website](https://img.shields.io/badge/Website-blue)](https://pythoncourt.com)
-[![Docs (zh)](https://img.shields.io/badge/Docs-zh-green)](docs/guide/started/index.md)
-[![中文说明](https://img.shields.io/badge/README-zh-orange)](docs/zh/README_zh.md)
+[![Docs (zh)](https://img.shields.io/badge/Docs-ZH-green)](docs/guide/started/index.md)
+[![中文说明](https://img.shields.io/badge/README-ZH-orange)](docs/zh/README_zh.md)
 
 </div>
 
@@ -54,20 +54,21 @@ It's a collective search for **sustainable order in AI‑assisted development**.
 
 ---
 
-## ⚖️ Law catalogue (technical overview)
+## ⚖️ The Codex: Recurring Anti‑Patterns That Erode Engineering Order
 
-PyCourt ships a growing set of **laws** (`TC001`, `DI001`, …).  
-They are not syntax errors; they are **structural smells** that repeatedly caused real teams pain.
+The following **PyCourt Laws** are patterns I've distilled from practice.  
+They aren't syntax errors, but **structural issues** that repeatedly lead to code being  
+**hard to understand, maintain, or evolve**.
 
-They mainly look at:
+These laws focus on:
+* **Architectural Boundaries** – Are modules at the correct abstraction level?  
+* **Dependency Discipline** – Are there hidden couplings or inverted dependencies?  
+* **Type Integrity** – Does the code evade constraints via `Any`, bare `dict`, or `object`?  
+* **Configuration Governance** – Are parameters bypassing unified rule sources?  
+* **Test Authenticity** – Do tests verify behavior, or just create false confidence?
 
-- **Architecture boundaries** – which modules are allowed to depend on which
-- **Dependency direction** – avoiding hidden coupling and “inverted” imports
-- **Type discipline** – where `Any` / `dict` / `object` are used as escape hatches
-- **Configuration hygiene** – whether parameters flow through a single, traceable source
-- **Test quality** – whether tests are actually asserting behaviour
+Severity is about **blocking strategy**, not moral judgment:  
 
-Below is the technical view of the current core laws.
 
 | Level | Law | Crime | Description |
 |-------|-----|-------|-------------|
@@ -88,291 +89,225 @@ Below is the technical view of the current core laws.
 | 🟡 | **PC001** | Configuration Bypass | Config params bypassing RuleProvider channels |
 | 🔵 | **TP001** | Fake Testing | Tests that appear to run but verify nothing |
 
-<small>Severity: 🔴 Critical → 🟠 High → 🟡 Medium → 🔵 Low</small>
+Severity: 🔴 Critical → 🟠 High → 🟡 Medium → 🔵 Low
 
-> Severity is about **blocking strategy**, not moral judgment:  
-> 🔴 blocking · 🟠 high‑risk · 🟡 acceptable but suspicious · 🔵 informational.
-
-In the English README, we keep the laws **technical and precise**.  
-Humorous nicknames are delegated to the community (see “Law nicknaming” below).
+<small>*Note: The Chinese version uses culturally‑rich crime metaphors.  
+Join our [CulturalCodeCrimes](https://github.com/PythonCourt/pycourt/discussions/1) challenge to propose creative and humorous nicknames in your language!*</small>
 
 ---
 
-## 🏛 Architecture: engine, weapons, workflow
+## ⚔️ Architecture: A Composable, Automated Defense System
 
-PyCourt is not a single binary. It is a **stack of cooperating layers**:
+PythonCourt isn't a single tool—it's a **layered audit-and-adjudication system**.  
+Each layer determines whether code **earns entry into the system boundary**.
 
-### 1. PyCourt engine (core)
+### 1. ⚖️ **The Laws** (Core Engine)
 
-- **Input**: Python files / packages
-- **Mechanism**: AST + rule definitions (`laws`)
-- **Output**: structured violations keyed by law ID (e.g. `DI001`, `HC001`)
-
-Think of it as a specialized linter for **architecture and discipline**, not formatting.
-
----
-
-### 2. Weapons (orchestration layer)
-
-The “weapons” are shell / CLI scripts that orchestrate:
-
-- PyCourt (architecture & rule audit)
-- Type checkers (Mypy / Pyright)
-- Style & security tools (Ruff / Bandit)
-- Tests and coverage (via your preferred test runner)
-
-They turn individual tools into **repeatable workflows**, such as:
-
-- “surgical” audit of a single AI‑generated file
-- module‑level refactor safety checks
-- full‑project gate in CI/CD
-
-See `docs/script/official/index.md` for the current set:
-
-- `qaf` – single‑file dagger
-- `qas` – module / directory sabre
-- `qa`  – full‑project sceptre for CI
+* **What it is**: The rules codified from production experience  
+* **What it does**: AST‑based structural analysis of Python code  
+* **The question it answers**: "Does this code respect **engineering order**?"
 
 ---
 
-### 3. Workflow layer
+### 2. ⚔️ **The Weapons** (Orchestration Scripts)  
 
-On top of weapons, each team can define:
-
-- when to run which weapon (on save, pre‑commit, nightly, CI)
-- which laws are **hard blockers** vs **soft warnings**
-- how to combine static checks, tests, and coverage thresholds
-
-PyCourt itself only answers:
-
-> “Given these rules, does this code deserve to exist in this boundary?”
-
-How you plug that answer into your delivery process is up to you.
+* **What it is**: Configurable scripts combining PyCourt with other tools  
+* **What it does**: Executes laws in sequence, enforces policies, delivers verdicts  
+* **The question it answers**: "How should these laws be **applied and enforced**?"
 
 ---
 
-## 🧩 Installation & configuration
+### 3. 🎭 **The Scenes** (Workflow Contexts)
 
-### 1. Install the CLI
+* **What it is**: Pre‑defined strategies for different development situations  
+* **What it does**: Matches audit rigor to context (file‑level → project‑level)  
+* **The question it answers**: "What's the **appropriate audit for this scenario**?"
+---
 
-PyCourt is published as a regular Python package, currently tested on **Python 3.11–3.14**.
+## 🧩 Installation & Configuration: Customizing Your Supreme Court
 
-Recommended:
+### 1️⃣ Install PyCourt  
+Published as a standalone Python package, tested on **Python 3.11–3.14**.
 
 ```bash
+# Recommended: use within your project's virtual environment
 pip install pycourt
 ```
-2. Initialize pycourt.yaml in your project
 
-From your project root:
+### 2️⃣ Initialize Your Court
+
+This creates pycourt.yaml—the single source of truth for your adjudication system.
+
 ```bash
-cd /path/to/your-project
 pycourt init
 ```
-This will:
+### 3️⃣ 【Advanced but Recommended】Configure in pyproject.toml
 
-1. Detect the project root (via pyproject.toml, VCS, etc.).
-2. Generate a commented pycourt.yaml template if it does not exist.
-
-pycourt.yaml is where you declare file‑level exemptions per law, e.g.:
-```yaml
-exemptions:
-  HC001:
-    files:
-      - "tests/**"        # tests often tolerate more hard‑coded literals
-      - "migrations/**"   # database migrations are usually not “clean” code
-  LL001:
-    files:
-      - "**/tests/**"     # long helper functions only used in tests
-```
-The matching uses fnmatch‑style globs (foo/**, **/tests/**, etc.).
-
-3. (Optional but recommended) Declare civilized paths
-
-You can also declare the “civilized territory” of your project in pyproject.toml:
 ```toml
 [tool.pycourt]
 civilized_paths = [
   "src/api",
-  "src/domain",
+  "src/domain", 
   "src/services",
   "src/infra",
 ]
 
-coverage = 85  # coverage threshold (%) consumed by higher-level weapons
+coverage = 85  # test coverage threshold (%)
 ```
-•  PyCourt (and especially the weapons) can use this to limit audits to code you consider “civilized”.
-•  Unlisted paths can be treated as legacy / experiments / one‑off scripts.
+The philosophy: Declarative governance over reactive inspection.
+You define the civilized territory; PythonCourt guards its boundaries.
 
+---
 
+## 🚀 Quick Start: Conduct Your First Adjudication
 
-🚀 Quick start: your first judgment
+### 1️⃣ Choose a Weapon
 
-With pycourt installed and pycourt.yaml initialized:
+Select an audit script based on your development phase:
 
-1. Project‑wide preview
-```bash
-   pycourt scope .
-```
- This will:
+* Dagger – Quick single‑file validation
+* Saber – Module‑level structural audit
+* Scepter – Cross‑domain project‑level review
 
-•  recursively scan Python files under the current directory
-•  apply file‑level exemptions from pycourt.yaml
-•  report violations grouped by law ID
-2. Single‑file audit (great with AI‑generated code)
-```bash
-   pycourt file path/to/foo.py
-```
-3. Wire into CI/CD
+👉 [View and download weapon scripts](/docs/script/official/index.md)
 
-   For example, only enforce a subset of strict laws:
-```bash
-   pycourt scope . --select HC001,HC003,DI001,TC001
-```
-PyCourt does not auto‑fix your code.  
-It simply makes it harder for questionable code to slip into your main branch unnoticed.
+### 2️⃣ Launch the Audit
 
-📜 Judgment reports, not raw logs
+The script orchestrates tools in a defined sequence:
 
-PyCourt does not just dump tool output.  
-It produces a structured, reviewable judgment keyed by law and location.
+* PyCourt (architectural & rule‑based audits)
+* Mypy / Pyright (type system)
+* Ruff / Bandit (style & security)
 
-A (simplified) example for DI001:
+All results are aggregated into a unified adjudication context.
+
+### 3️⃣ Accept or Reject
+
+❌ Critical violations → adjudication fails
+
+✅ All clear → code earns eligibility for the main branch
+
+PythonCourt doesn't fix code. It answers one question:
+
+**Is this code worthy of existence?**
+
+## 📜 Verdicts, Not Logs
+
+PythonCourt doesn't output scattered inspection logs.
+
+It produces structured, actionable, reviewable verdicts. Each violation is presented by its "judge" with clear guidance:
+
 ```yaml
+# DI001 Judge's verdict
 DI001:
   template: |
-    🏛️ Dependency Inversion Officer (DI001): detected a suspicious cross-component import.
-    📋 Offending import: app.services.order_service -> app.infra.db.session
-    💡 Recommendation: depend on an abstract interface instead of a concrete implementation.
-    🔧 Quick fix: extract an interface and inject the implementation via configuration.
+    🏛️ Dependency Inversion Judge (DI001): Suspicious cross‑module/component dependency detected
+    📋 Violation: app.services.order_service → app.infra.db.session  
+    💡 Recommendation: Prefer abstraction (interface/protocol) over concrete implementation
+    🔧 Quick fix: Abstract the dependency and fulfill it through dependency injection
 ```
+This means:
 
-This makes it easier for:
+- AI can understand its own errors
+- Humans can judge whether to accept the verdict
+- CI can block based on severity thresholds
 
-•  AI agents to understand and fix their own mistakes
-•  humans to decide whether to accept or appeal the judgment
-•  CI to block based on severity or specific laws
+PythonCourt isn't concerned with "whether there are problems," but rather: Is this code worthy of crossing the system boundary?
 
-PyCourt cares less about “is there any issue at all”  
-and more about “does this code meet the standards of this boundary”.
+## 🚫 When Not to Use PythonCourt
 
+### ❌ These Are Poor Fits
 
+- **"If it runs, it's good enough"**  
+  When you're rapidly prototyping, writing throw‑away scripts, or building short‑lived proofs‑of‑concept,  
+  PythonCourt's adjudication will feel **overly strict**.
 
-🚫 When not to use PyCourt
+- **You want the tool to "fix the code for you"**  
+  PythonCourt doesn't generate code, perform automatic refactoring, or mask design flaws.  
+  It **adjudicates**, not comforts.
 
-PyCourt is not for everyone, and is intentionally overkill for some workflows.
+- **No basic sense of engineering boundaries yet**  
+  If your project doesn't distinguish between domain, interface, and infrastructure layers,  
+  PythonCourt will just keep reminding you: **"This isn't civilized territory yet."**
 
-Poor fit
+- **Treating AI as an outsourcer, not a collaborator**  
+  AI writes code, but humans own the structure, boundaries, and long‑term quality.  
+  If you expect AI to make engineering decisions independently, this system will seem superfluous.
 
-•  Prototype‑only / throwaway code
+---
 
-  If your goal is just to validate an idea with a short‑lived script,  
-  PyCourt’s structure and discipline will feel like unnecessary friction.
+### ✅ These Are Excellent Fits
 
-•  “Fix my code for me” expectations
+* You're using AI to write **production‑grade code**  
+* You're starting to feel the "repair loop" and structural decay  
+* You're willing to introduce explicit **laws, boundaries, and adjudication processes**  
+* You accept that **some code should be refused existence**
 
-  PyCourt does not generate code, auto‑refactor, or hide design problems.  
-  It judges; it does not comfort.
+---
 
-•  No basic architecture in place
+**PythonCourt isn't a productivity tool. It's an engineering stance.**
 
-  If your project does not yet distinguish domains, interfaces, and infrastructure,  
-  PyCourt will mostly keep telling you “this is not a civilized territory yet”.
-
-•  Treating AI as outsourced engineering
-
-  AI can write code, but humans are still responsible for structure, boundaries, and longevity.  
-  If you expect AI to make architectural decisions on its own, this system will feel redundant.
-
-Good fit
-
-•  You are using AI to write production‑grade code.
-•  You are starting to feel “fixing loops” and structural decay.
-•  You are willing to introduce laws, boundaries, and explicit judgment into your process.
-•  You accept the idea that some code should be rejected from the system.
-
-PyCourt is not a productivity tool.  
-It is an engineering stance.
+Join the discussion 👉 [The Meaning and Methods of Architecture‑First Development](https://github.com/orgs/PythonCourt/discussions/2)
 
 
 
-🔧 Contributing & local development
+## 🔧 Contributing & Governance
 
-PyCourt is both a tool and an ongoing experiment in code governance.  
-If you want to shape the laws, algorithms, or tooling, you are welcome.
+PythonCourt isn't just a tool—it's a **methodology about code order**.  
+If you want to help shape rule design, audit algorithms, or cross‑platform tooling:
 
-1. Hacking on PyCourt itself
-
+### 1️⃣ Modify PyCourt Itself (Engine Contributions)
 ```bash
 git clone https://github.com/PythonCourt/pycourt.git
 cd pycourt
-
-# Install dev dependencies
 poetry install
 
-# Run the CLI from source
-poetry run pycourt --help
+# Run audits directly within the repository
 poetry run pycourt scope pycourt
-
-# Or use the official weapons from this repo
-poetry run ./qaf.sh               # single-file audit
-poetry run ./qas.sh -s pycourt -n # non-blocking self-audit of the pycourt package
-poetry run ./qa.sh                # full-project gate driven by pyproject.toml
+poetry run ./qa.sh
 ```
 
-No manual PYTHONPATH tweaking is required when using Poetry.
+2️⃣ Use PyCourt Locally in Your Own Project
 
-2. Depending on local PyCourt from your own project
-
-In your own project’s pyproject.toml:
 ```toml
+# In your project's pyproject.toml
 [tool.poetry.dependencies]
 pycourt = { path = "../PyCourt", develop = true }
 ```
-Then, from that project:
+3️⃣ Use PyCourt in Your Project (Standard Workflow)
+
 ```bash
-poetry install
-poetry run pycourt scope .
+poetry install          # Set up your environment
+poetry run pycourt init # Generate configuration
+poetry run pycourt scope . # Audit your project
 ```
-Any changes you make in ../PyCourt/pycourt/ will be visible immediately.
+For detailed contribution guidelines, architecture decisions, and governance model:
+👉 Read the Contribution Guide
 
-For more community‑oriented contribution ideas, see:
-
-•  docs/guide/community/contribute.md
-
-🌍 Law nicknaming & cultural metaphors
-
-In Chinese, many laws have playful nicknames (e.g. metaphors from history or idioms).  
-Instead of hard‑coding those into the English spec, we treat nicknaming as a community activity.
-
-•  The formal spec of each law lives in:
-◦  its ID (DI001, HC001, …)
-◦  its English technical description
-◦  its detection logic and config
-•  The fun parts – nicknames, stories, cultural metaphors – belong to the community.
-
-If your language or culture has a vivid way to describe a particular code smell  
-(a proverb, a historical reference, a meme), you are invited to:
-
-•  propose a nickname for a law in your language
-•  add a one‑paragraph story or explanation
-•  discuss whether it matches the behaviour of that law
-
-👉 Join the naming & translation discussion here:  
-<https://github.com/orgs/PythonCourt/discussions/1>
+This is a collective search for sustainable order in AI‑assisted development.
 
 
+---
 
-<div align="center" markdown="1">
 <br><br>
 
-PythonCourt cannot guarantee good code.<br>
-It only tries to make it harder for bad code to stay.<br>
-If you are building long‑lived systems with AI as a collaborator,<br>
-you are welcome to treat this as an ongoing engineering experiment.
+<div align="center">
+
+PythonCourt doesn't guarantee good code.<br>
+It only tries to make bad code **harder to stay**.  
+
+If you're also building long‑lived systems with AI,<br>
+consider this an **ongoing engineering experiment**.
+
 
 <br>
-<img src="https://img.shields.io/github/stars/pythoncourt/pycourt?style=social" alt="GitHub stars"> <img src="https://img.shields.io/github/forks/pythoncourt/pycourt?style=social" alt="GitHub forks"> <img src="https://img.shields.io/github/issues/pythoncourt/pycourt" alt="GitHub issues">
-<br><br>
-<p><strong>Let AI write code. Let the court decide what gets in.</strong></p>
+
+[![GitHub stars](https://img.shields.io/github/stars/PythonCourt/pycourt?style=social)](https://github.com/PythonCourt/pycourt)
+[![GitHub forks](https://img.shields.io/github/forks/PythonCourt/pycourt?style=social)](https://github.com/PythonCourt/pycourt)
+[![GitHub issues](https://img.shields.io/github/issues/PythonCourt/pycourt)](https://github.com/PythonCourt/pycourt/issues)
+
+<br>
+
+**Make AI Write Production‑Grade Code**
+
 </div>

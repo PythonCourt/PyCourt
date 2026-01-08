@@ -13,9 +13,9 @@
 ![Python](https://img.shields.io/badge/Python-3.11→3.14-blue)
 ![License](https://img.shields.io/github/license/PythonCourt/pycourt)
 
-[![Website](https://img.shields.io/badge/网站-blue)](https://pythoncourt.com)
-[![Docs](https://img.shields.io/badge/文档-green)](../guide/started/index.md)
-[![English](https://img.shields.io/badge/English-gray)](../../README.md)
+[![Website](https://img.shields.io/badge/Website-blue)](https://pythoncourt.com)
+[![Docs](https://img.shields.io/badge/Docs-ZH-green)](../guide/started/index.md)
+[![English](https://img.shields.io/badge/README-EN-orange)](../../README.md)
 
 </div>
 
@@ -42,7 +42,7 @@ AI 让不懂代码的我也能写程序了，但在缺乏规则的情况下，�
 
 ## ⚖️ 法典总览：那些反复破坏工程秩序的坏味道
 
-下表列出的是为在实践中总结的一些 **PyCourt Laws**。
+下表列出的是我在实践中总结的一些 **PyCourt Laws**。
 它们并非语言层面的语法错误，而是我在实践中反复遇到、并最终导致代码**难以理解、难以维护或难以演进**的结构性问题。
 
 这些规则主要关注：
@@ -89,21 +89,21 @@ AI 让不懂代码的我也能写程序了，但在缺乏规则的情况下，�
 PythonCourt 并不是单一工具，而是一套**分层协作的审计与裁决体系**。
 每一层各司其职，共同决定一段代码是否能够进入系统边界。
 
-### ⚖️ PyCourt（核心引擎）
+### ⚖️ 法律 - 核心引擎
 
-* **能力**：基于 AST 与 rules，对 Python 代码进行结构性与架构级审计
+* **能力**：基于 AST 与 rules，对 Python 代码进行结构性与质量审计
 * **职责**：AI 可以生成“能运行的代码”，但 PyCourt 负责判断它是否**符合工程秩序**
 
 ---
 
-### 🧭 Weapon（编排与裁决层）
+### ⚔️ 武器 - 编排脚本
 
 * **能力**：将 PyCourt 的 laws 与 Mypy、Pyright、Ruff、Bandit 等工具编排而成的武器
 * **职责**：定义审计级别、执行顺序与阻断策略，并给出**最终裁决结果**
 
 ---
 
-### 🛠️ Workflow（工作流层）
+### 🛠️ 场景 - 工作流
 
 * **能力**：针对文件、目录与模块级别，设计并组合不同的审计策略
 * **职责**：根据开发节奏与风险等级，形成可复用、可演进的审计工作流
@@ -272,18 +272,23 @@ pycourt = { path = "../PyCourt", develop = true }
 
 ---
 
-<div align="center" markdown="1"> 
 <br><br>
-<br>
-<p>
+
+<div align="center">
+
 PythonCourt 不保证写出好代码<br>
-它只试图让坏代码，没那么容易留下来<br>
+它只试图让坏代码，没那么容易留下来  
+
 如果你也在和 AI 一起写需要长期维护的系统<br>
 欢迎把这里当作一次持续的工程实验
-</p>
+
 <br>
-<img src="https://img.shields.io/github/stars/pythoncourt/pycourt?style=social" alt="GitHub stars"> <img src="https://img.shields.io/github/forks/pythoncourt/pycourt?style=social" alt="GitHub forks"> <img src="https://img.shields.io/github/issues/pythoncourt/pycourt" alt="GitHub issues">
-<br><br>
+
+[![GitHub stars](https://img.shields.io/github/stars/PythonCourt/pycourt?style=social)](https://github.com/PythonCourt/pycourt)
+[![GitHub forks](https://img.shields.io/github/forks/PythonCourt/pycourt?style=social)](https://github.com/PythonCourt/pycourt)
+[![GitHub issues](https://img.shields.io/github/issues/PythonCourt/pycourt)](https://github.com/PythonCourt/pycourt/issues)
+
+<br>
 <p><strong>让AI写出生产级代码</strong></p>
 </div>
 

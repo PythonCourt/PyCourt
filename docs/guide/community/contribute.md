@@ -38,11 +38,6 @@
 
 👉 前往讨论区参与“外交会晤”，[点击这里](https://github.com/PythonCourt/pycourt/discussions/1) 参与“文化翻译”大挑战
 
-### 4. 武器重铸计划
-我们需要资深的 **Rust/Go/Python CLI** 铁匠。
-
-目前的 Shell 脚本只是原型，我们需要你帮我们将这套工作流打造为跨平台的二进制神器。
-
-👉 [查看重铸计划 Roadmap](link-to-issue)
 
 ---
+
