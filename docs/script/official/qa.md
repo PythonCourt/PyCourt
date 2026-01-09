@@ -1,6 +1,6 @@
 # PyCourt 武器库 - 皇帝节仗
 
-[Download](qa.sh)
+[Download](../../../qa.sh)
 
 ```bash
 #!/bin/bash
@@ -236,6 +236,6 @@ print_sub_header "可以放心推送了！"
 
 ---
 
-[Download](qa.sh)
+[Download](../../../qa.sh)
 
 ---

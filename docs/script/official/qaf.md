@@ -1,6 +1,6 @@
 # 特战匕首
 
-[Download](qaf.sh)
+[Download](../../../qaf.sh)
 
 
 ```bash
@@ -300,6 +300,6 @@ print_success "结案判决：目标已达纯净！"
 
 ---
 
-[Download](qaf.sh)
+[Download](../../../qaf.sh)
 
 ---

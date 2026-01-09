@@ -1,24 +1,70 @@
-[tool.poetry]
+[project]
 name = "pycourt"
-version = "0.1.0"
-description = "Static architecture court for Python projects."
-authors = ["PythonCourt Team <dev@pythoncourt.com>"]
+version = "0.1.1"
+description = "Production-grade code audit engine for AI-generated Python code. AST-powered, rule-based quality enforcement."
+authors = [
+    {name = "PythonCourt Team", email = "johorner@pythoncourt.com"}
+]
 license = "MIT"
 readme = "README.md"
+requires-python = ">=3.11,<4.0"
+classifiers = [
+    # 🎯 AI + 代码质量（核心定位）
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+    
+    # 🎯 开发状态
+    "Development Status :: 4 - Beta",
+    
+    # 🎯 目标用户
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    
+    # 🎯 技术领域
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Version Control :: Git",
+    
+    # 🐍 Python 版本支持
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    
+    # 🛠️ Python 生态
+    "Framework :: Pytest",
+    "Typing :: Typed",
+    
+    # 🌐 多语言支持（可选）
+    "Natural Language :: English",
+    "Natural Language :: Chinese (Simplified)",
+]
+keywords = [
+    "ai", "code-quality", "static-analysis", 
+    "ast", "linting", "architecture", 
+    "python", "audit", "rules", "production"
+]
+dependencies = [
+    "pydantic>=2.9.0,<3.0.0",
+    "PyYAML>=6.0.0,<7.0.0",
+]
+
+[project.urls]
+Homepage = "https://pythoncourt.com"
+Documentation = "https://pythoncourt.com/docs"
+Repository = "https://github.com/PythonCourt/PyCourt"
+"Bug Tracker" = "https://github.com/PythonCourt/PyCourt/issues"
+Discussions = "https://github.com/PythonCourt/PyCourt/discussions"
+
+[project.scripts]
+pycourt = "pycourt.cli:main"
+
+[tool.poetry]
 packages = [{ include = "pycourt" }]
 include = [
   "pycourt/yaml/*.yaml",
 ]
-homepage = "https://pythoncourt.com"
-
-[tool.poetry.dependencies]
-# Runtime: support Python 3.11 and above (developed and tested on 3.14).
-python = ">=3.11,<4.0"
-pydantic = ">=2.9.0,<3.0.0"
-PyYAML = ">=6.0.0,<7.0.0"
-
-[tool.poetry.scripts]
-pycourt = "pycourt.cli:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

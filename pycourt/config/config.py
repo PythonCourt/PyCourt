@@ -30,6 +30,8 @@
 
 from __future__ import annotations
 
+import os
+
 from pydantic import Field, RootModel
 
 from pycourt.models import PyCourtBase, PyCourtLaws
@@ -352,7 +354,14 @@ class CourtConfig(PyCourtBase):
     def get_judge_template(self, code: str) -> str:
         """根据法条编号返回判决模板字符串。
 
-        若配置缺失，将抛出 KeyError，鼓励在测试阶段尽早暴露问题。
+        受众策略由环境变量 ``PYCOURT_AUDIENCE`` 控制：
+
+        - 未设置 / 非 "ai" → 使用人类友好版 ``template`` 字段；
+        - 设置为 "ai"        → 优先使用 ``template_ai`` 字段，缺失时回退到
+          ``template``，以保证向后兼容。
+
+        若最终无法取得合法字符串，将抛出 KeyError，鼓励在测试阶段尽早暴露
+        配置问题。
         """
 
         entry = self.texts.judges.root.get(code)
@@ -360,9 +369,18 @@ class CourtConfig(PyCourtBase):
             msg = f"judge template entry not found for code: {code!r}"
             raise KeyError(msg)
 
-        tpl = entry.get("template")
+        audience = os.getenv("PYCOURT_AUDIENCE", "human").strip().lower()
+        if audience == "ai":
+            # AI 模式下优先使用 template_ai，缺失时回退到 template
+            tpl = entry.get("template_ai") or entry.get("template")
+        else:
+            tpl = entry.get("template")
+
         if not isinstance(tpl, str):  # pragma: no cover - 防御性分支
-            msg = f"judge template missing 'template' field for code: {code!r}"
+            msg = (
+                "judge template missing 'template'/'template_ai' field for code: "
+                f"{code!r}"
+            )
             raise KeyError(msg)
 
         return tpl

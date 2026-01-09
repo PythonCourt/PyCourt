@@ -1,7 +1,7 @@
 
 # 帝国军刀
 
-[Download](qas.sh)
+[Download](../../../qas.sh)
 
 ```bash
 #!/bin/bash
@@ -420,6 +420,6 @@ fi
 
 ---
 
-[Download](qas.sh)
+[Download](../../../qas.sh)
 
 ---

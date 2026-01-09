@@ -41,10 +41,16 @@ export PYCOURT_LANG="${PYCOURT_LANG:-zh}"
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
 
 print_chapter_header() {
-    echo -e "\n${BLUE}================== $1 ==================${NC}"
+    # 人类模式下输出章节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${BLUE}================== $1 ==================${NC}"
+    fi
 }
 print_sub_header() {
-    echo -e "\n${YELLOW}--- $1 ---${NC}"
+    # 人类模式下输出小节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${YELLOW}--- $1 ---${NC}"
+    fi
 }
 print_success() {
     echo -e "${GREEN}✅ $1${NC}"
@@ -69,6 +75,22 @@ RUN_E2E=0
 if [[ " $@ " =~ " --with-e2e " ]]; then
   RUN_E2E=1
 fi
+
+# 是否启用 AI 模式（紧凑文案 + 抑制叙事输出）。
+# 通过 -a 或 --ai 开启，环境变量优先级更高（若外部已设置则保留外部值）。
+for arg in "$@"; do
+  case "$arg" in
+    -a|--ai)
+      export PYCOURT_AUDIENCE=${PYCOURT_AUDIENCE:-ai}
+      export PYCOURT_UI_MODE=${PYCOURT_UI_MODE:-ai}
+      # 若当前语言为中文系 (zh*)，在 AI 模式下自动切换到英文文案，
+      # 若用户已显式设为 en/其他语言，则尊重用户选择。
+      if [[ "${PYCOURT_LANG:-}" == zh* ]]; then
+        export PYCOURT_LANG=en
+      fi
+      ;;
+  esac
+done
 
 # 是否启用“测试阶段”（第三/四章），默认 0：关闭。
 # 需要时可通过修改为 `ENABLE_TEST_PHASE:-1` 打开统一测试能力。
@@ -107,7 +129,7 @@ CIV_SOURCE_PATHS=("${CIVILIZED_PATHS[@]}")
 
 for SCOPE in "${CIV_SOURCE_PATHS[@]}"; do
   print_sub_header "派遣军刀对【${SCOPE}】进行静态审计..."
-  ./qas.sh -s "${SCOPE}" || { print_error "❌军刀在 ${SCOPE} 静态审计失败"; exit 1; }
+  ./qas.sh "${SCOPE}" || { print_error "❌军刀在 ${SCOPE} 静态审计失败"; exit 1; }
 done
 
 print_success "所有疆域静态审查全面通过！"
@@ -181,7 +203,7 @@ if [ "$ENABLE_TEST_PHASE" -eq 1 ]; then
       # 2.2 测试战区静态审计（复用军刀的静态能力）
       # ---------------------------------------------
         print_sub_header "2.2 派遣军刀对测试战区执行静态审计"
-        ./qas.sh -s "$TDIR" || { print_error "❌ 军刀在测试战区 ${TDIR} 静态审计失败"; exit 1; }
+        ./qas.sh "$TDIR" || { print_error "❌ 军刀在测试战区 ${TDIR} 静态审计失败"; exit 1; }
         print_success "✅ 测试战区【${TDIR}】静态审计通过！"
       done
 
