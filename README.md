@@ -71,7 +71,7 @@ Severity is about **blocking strategy**, not moral judgment:
 
 
 | Level | Law | Crime | Description |
-|-------|-----|-------|-------------|
+|:-------:|:-----|:-------|:-------------|
 | 🔴 | **TC001** | Circular Import Smuggling | Using `TYPE_CHECKING` to hide circular dependencies |
 | 🔴 | **RE001** | Init Overreach | `__init__.py` handling core business logic improperly |
 | 🔴 | **DI001** | Dependency Violation | Directly depending on concrete implementations |
@@ -107,7 +107,7 @@ Each layer determines whether code **earns entry into the system boundary**.
 * **What it does**: AST‑based structural analysis of Python code  
 * **The question it answers**: "Does this code respect **engineering order**?"
 
----
+
 
 ### 2. ⚔️ **The Weapons** (Orchestration Scripts)  
 
@@ -115,7 +115,7 @@ Each layer determines whether code **earns entry into the system boundary**.
 * **What it does**: Executes laws in sequence, enforces policies, delivers verdicts  
 * **The question it answers**: "How should these laws be **applied and enforced**?"
 
----
+
 
 ### 3. 🎭 **The Scenes** (Workflow Contexts)
 
@@ -214,6 +214,8 @@ This means:
 
 PythonCourt isn't concerned with "whether there are problems," but rather: Is this code worthy of crossing the system boundary?
 
+---
+
 ## 🚫 When Not to Use PythonCourt
 
 ### ❌ These Are Poor Fits
@@ -234,7 +236,6 @@ PythonCourt isn't concerned with "whether there are problems," but rather: Is th
   AI writes code, but humans own the structure, boundaries, and long‑term quality.  
   If you expect AI to make engineering decisions independently, this system will seem superfluous.
 
----
 
 ### ✅ These Are Excellent Fits
 

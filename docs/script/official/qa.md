@@ -6,12 +6,13 @@
 #!/bin/bash
 
 # ==============================================================================
-# 🏛️ 皇帝节仗
+# 🏛️ 皇帝节仗 v1.1
 # 定位：对整个项目进行全面审计
 # 用法: ./qa.sh
 # 场景：跨域模块和组件综合验收以及在代码准备推送前进行全面审计。
 # 要求：项目必须通过所有静态审计与测试，且测试覆盖率符合预设阈值。
 # 说明：此脚适用于大多数常见场景，可根据实际需要自由搭配、修改和扩展。
+# 更新：新增 AI 模式，排除干扰，降低 token 成本 命令：./qa.sh -a
 # ==============================================================================
 # 1. 引入“职责分离”，将“读取配置”与“执行审计”彻底解耦。
 # 2. 全面覆盖静态审计与动态测试，确保代码质量万无一失。
@@ -46,10 +47,16 @@ export PYCOURT_LANG="${PYCOURT_LANG:-zh}"
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
 
 print_chapter_header() {
-    echo -e "\n${BLUE}================== $1 ==================${NC}"
+    # 人类模式下输出章节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${BLUE}================== $1 ==================${NC}"
+    fi
 }
 print_sub_header() {
-    echo -e "\n${YELLOW}--- $1 ---${NC}"
+    # 人类模式下输出小节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${YELLOW}--- $1 ---${NC}"
+    fi
 }
 print_success() {
     echo -e "${GREEN}✅ $1${NC}"
@@ -74,6 +81,22 @@ RUN_E2E=0
 if [[ " $@ " =~ " --with-e2e " ]]; then
   RUN_E2E=1
 fi
+
+# 是否启用 AI 模式（紧凑文案 + 抑制叙事输出）。
+# 通过 -a 或 --ai 开启，环境变量优先级更高（若外部已设置则保留外部值）。
+for arg in "$@"; do
+  case "$arg" in
+    -a|--ai)
+      export PYCOURT_AUDIENCE=${PYCOURT_AUDIENCE:-ai}
+      export PYCOURT_UI_MODE=${PYCOURT_UI_MODE:-ai}
+      # 若当前语言为中文系 (zh*)，在 AI 模式下自动切换到英文文案，
+      # 若用户已显式设为 en/其他语言，则尊重用户选择。
+      if [[ "${PYCOURT_LANG:-}" == zh* ]]; then
+        export PYCOURT_LANG=en
+      fi
+      ;;
+  esac
+done
 
 # 是否启用“测试阶段”（第三/四章），默认 0：关闭。
 # 需要时可通过修改为 `ENABLE_TEST_PHASE:-1` 打开统一测试能力。
@@ -112,7 +135,7 @@ CIV_SOURCE_PATHS=("${CIVILIZED_PATHS[@]}")
 
 for SCOPE in "${CIV_SOURCE_PATHS[@]}"; do
   print_sub_header "派遣军刀对【${SCOPE}】进行静态审计..."
-  ./qas.sh -s "${SCOPE}" || { print_error "❌军刀在 ${SCOPE} 静态审计失败"; exit 1; }
+  ./qas.sh "${SCOPE}" || { print_error "❌军刀在 ${SCOPE} 静态审计失败"; exit 1; }
 done
 
 print_success "所有疆域静态审查全面通过！"
@@ -186,7 +209,7 @@ if [ "$ENABLE_TEST_PHASE" -eq 1 ]; then
       # 2.2 测试战区静态审计（复用军刀的静态能力）
       # ---------------------------------------------
         print_sub_header "2.2 派遣军刀对测试战区执行静态审计"
-        ./qas.sh -s "$TDIR" || { print_error "❌ 军刀在测试战区 ${TDIR} 静态审计失败"; exit 1; }
+        ./qas.sh "$TDIR" || { print_error "❌ 军刀在测试战区 ${TDIR} 静态审计失败"; exit 1; }
         print_success "✅ 测试战区【${TDIR}】静态审计通过！"
       done
 
@@ -232,6 +255,7 @@ fi
 print_chapter_header "终章：胜利宣言"
 print_success "帝国统一审计全面通过！代码值得信赖."
 print_sub_header "可以放心推送了！"
+
 ```
 
 ---

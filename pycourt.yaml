@@ -47,6 +47,7 @@ exemptions:
       - "tests/**"
       - "pycourt/cli.py"
       - "pycourt/config/judges_texts.py"
+      - "pycourt/config/config.py"
       - "pycourt/yaml/**"
       - "pycourt/laws/hc001.py"
       - "pycourt/laws/pc001.py"

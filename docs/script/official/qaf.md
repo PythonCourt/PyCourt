@@ -7,12 +7,13 @@
 #!/bin/bash
 
 # ==============================================================================
-# 🗡️ 特战匕首 V1.0 - 淬火重铸
+# 🗡️ 特战匕首 V1.1
 # 定位：对单一文件进行审计
 # 用法: ./qaf.sh <path/to/file.py>
 # 场景：新建或重构后立即进行单文件审计，将问题扼杀在摇篮中
 # 要求：必须确保该文件所有报错清零，尽管当前任务中不包含修复这些报错。
 # 说明：此脚适用于大多数常见场景，可根据实际需要自由搭配、修改和扩展。
+# 更新：新增 AI 模式，排除干扰，降低 token 成本 命令：./qaf.sh <path/to/file.py> -a
 # ==============================================================================
 
 # =======================================================================
@@ -25,11 +26,17 @@
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
 
 print_chapter_header() {
-    echo -e "\n${BLUE}================== $1 ==================${NC}"
+    # 人类模式下输出章节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${BLUE}================== $1 ==================${NC}"
+    fi
 }
 
 print_sub_header() {
-    echo -e "\n${YELLOW}--- $1 ---${NC}"
+    # 人类模式下输出小节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${YELLOW}--- $1 ---${NC}"
+    fi
 }
 
 print_success() {
@@ -66,7 +73,7 @@ validate_target() {
     # 提供的文件路径数量限定为一个
     if [ "$#" -lt 1 ]; then
         echo "❌ 错误：必须提供一个文件为审判目标 (文件路径)" >&2
-        echo "用法: ./qaf.sh <path/to/file.py>" >&2
+        echo "用法: ./qaf.sh [-a|--ai] <path/to/file.py>" >&2
         exit 1
     fi
 
@@ -74,21 +81,59 @@ validate_target() {
     # 目标文件必须存在
     if [ ! -f "$target" ]; then
         echo "❌ 错误：特战匕首的审判目标必须是一个存在的文件。" >&2
-        echo "用法: ./qaf.sh <path/to/file.py>" >&2
+        echo "用法: ./qaf.sh [-a|--ai] <path/to/file.py>" >&2
         exit 1
     fi
 
     # 目标必须为 Python 源文件
     if [[ "$target" != *.py ]]; then
         echo "❌ 错误：特战匕首仅支持审计单个 Python 源文件 (*.py)。" >&2
-        echo "用法: ./qaf.sh <path/to/file.py>" >&2
+        echo "用法: ./qaf.sh [-a|--ai] <path/to/file.py>" >&2
         exit 1
     fi
 }
 
-# 调用校验函数并设置 AUDIT_TARGET
-validate_target "$@"
-AUDIT_TARGET="$1"
+# 解析参数：可选 -a/--ai + 必填目标文件
+AUDIT_TARGET=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -a|--ai)
+            # AI 模式：切换为 AI 友好输出（由后端根据 PYCOURT_AUDIENCE/PYCOURT_UI_MODE 控制）
+            export PYCOURT_AUDIENCE=${PYCOURT_AUDIENCE:-ai}
+            export PYCOURT_UI_MODE=${PYCOURT_UI_MODE:-ai}
+            # 若当前语言为中文系 (zh*)，在 AI 模式下自动切换到英文文案，
+            # 若用户已显式设为 en/其他语言，则尊重用户选择。
+            if [[ "${PYCOURT_LANG:-}" == zh* ]]; then
+                export PYCOURT_LANG=en
+            fi
+            shift
+            ;;
+        -*)
+            echo "❌ 未知参数: $1" >&2
+            echo "用法: ./qaf.sh [-a|--ai] <path/to/file.py>" >&2
+            exit 1
+            ;;
+        *)
+            if [[ -z "$AUDIT_TARGET" ]]; then
+                AUDIT_TARGET="$1"
+                shift
+            else
+                echo "❌ 多余参数: $1" >&2
+                echo "用法: ./qaf.sh [-a|--ai] <path/to/file.py>" >&2
+                exit 1
+            fi
+            ;;
+    esac
+done
+
+if [[ -z "$AUDIT_TARGET" ]]; then
+    echo "❌ 错误：必须提供一个文件为审判目标 (文件路径)" >&2
+    echo "用法: ./qaf.sh [-a|--ai] <path/to/file.py>" >&2
+    exit 1
+fi
+
+# 调用校验函数，确保 AUDIT_TARGET 合法
+validate_target "$AUDIT_TARGET"
 
 # pycourt统一审计入口，根据法庭代码执行对应审计
 run_judges() {

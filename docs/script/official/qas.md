@@ -1,16 +1,19 @@
 
 # 帝国军刀
 
+You can translate it into your own country's language.
+
 [Download](../../../qas.sh)
 
 ```bash
 #!/bin/bash
 
 # ==============================================================================
-# 🗡️ 帝国军刀 V1.0
-# 审计：使用阻断模式对审计目标展开修复 命令：./qas.sh -s <directory>
-# 勘察：使用侦查模式获得全貌以制订策略 命令：./qas.sh -s <directory> -n
-# 测试：对关联的测试进行审计并单元测试 命令：./qas.sh -s <directory> -t
+# 🗡️ 帝国军刀 V1.1
+# 审计：使用阻断模式对审计目标展开修复 命令：./qas.sh <directory>
+# 勘察：使用侦查模式获得全貌以制订策略 命令：./qas.sh <directory> -n
+# 测试：对关联的测试进行审计并单元测试 命令：./qas.sh <directory> -t
+# 更新：新增AI模式，降低token以及干扰 命令：./qas.sh <directory> -a
 # 场景：对指定目录所有文件进行全面静态审计，并可选执行关联测试的单元测试。
 # ==============================================================================
 
@@ -29,7 +32,7 @@ set -euo pipefail
 export PYTHONPATH=$(pwd)
 
 # --------------------------------------------------------------
-# --- 3. PyCourt 语言切换：默认为中文，外部可覆盖 PYCOURT_LANG=en ---
+# --- 3. PyCourt 语言切换：默认为中文，外部可覆盖PYCOURT_LANG=en ---
 # --------------------------------------------------------------
 export PYCOURT_LANG="${PYCOURT_LANG:-zh}"
 
@@ -39,11 +42,17 @@ export PYCOURT_LANG="${PYCOURT_LANG:-zh}"
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
 
 print_chapter_header() {
-    echo -e "\n${BLUE}================== $1 ==================${NC}"
+    # 人类模式下输出章节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${BLUE}================== $1 ==================${NC}"
+    fi
 }
 
 print_sub_header() {
-    echo -e "\n${YELLOW}--- $1 ---${NC}"
+    # 人类模式下输出小节标题；AI 模式下默认关闭以减少噪音
+    if [[ "${PYCOURT_UI_MODE:-human}" != "ai" ]]; then
+        echo -e "\n${YELLOW}--- $1 ---${NC}"
+    fi
 }
 
 print_success() {
@@ -97,16 +106,12 @@ check_tool() {
 # --------------------------------------------------------------
 # --- 6. 参数解析与命令 ---
 # --------------------------------------------------------------
-AUDIT_DIR=""   # 审计目标目录
+AUDIT_DIR=""   # 审计目标目录（位置参数）
 AUDIT_NON_BLOCKING=0 # 是否启用非阻断模式，默认 0：阻断模式。
 QAS_ENABLE_TEST_PHASE=${QAS_ENABLE_TEST_PHASE:-0} # 是否启用测试阶段，默认 0：关闭。
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -s)
-      AUDIT_DIR="$2"
-      shift 2
-      ;;
     -n)
       AUDIT_NON_BLOCKING=1
       shift
@@ -115,15 +120,39 @@ while [[ $# -gt 0 ]]; do
       QAS_ENABLE_TEST_PHASE=1
       shift
       ;;
-    *)
+    -a|--ai)
+      # AI 模式：切换为 AI 友好输出（由后端根据 PYCOURT_AUDIENCE/PYCOURT_UI_MODE 控制）
+      export PYCOURT_AUDIENCE=${PYCOURT_AUDIENCE:-ai}
+      export PYCOURT_UI_MODE=${PYCOURT_UI_MODE:-ai}
+      # 若当前语言为中文系 (zh*)，在 AI 模式下自动切换到英文文案，
+      # 用户若已显式设置为 en/其他语言则保留其选择。
+      if [[ "${PYCOURT_LANG:-}" == zh* ]]; then
+        export PYCOURT_LANG=en
+      fi
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
       echo "❌ 未知参数: $1" >&2
       exit 1
+      ;;
+    *)
+      if [[ -z "$AUDIT_DIR" ]]; then
+        AUDIT_DIR="$1"
+        shift
+      else
+        echo "❌ 多余参数: $1" >&2
+        exit 1
+      fi
       ;;
   esac
 done
 
 if [ -z "$AUDIT_DIR" ]; then
-    echo "❌ 用法错误: 必须提供 -s <directory>" >&2
+    echo "❌ 用法错误: 必须提供审计目录，例如: ./qas.sh src/module" >&2
     exit 1
 fi
 
