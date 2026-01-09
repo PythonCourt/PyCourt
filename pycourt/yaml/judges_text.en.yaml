@@ -1,0 +1,292 @@
+# === 🏛️ PyCourt Supreme Court - Courtroom & Judge Messages (EN) ===
+
+courtroom:
+  supreme_court:
+    summary_failed: "❌ Found {count} constitutional violations:"
+    summary_passed: "✅ Review passed, no violations found in the selected scope"
+
+# === 🏛️ Judge templates by law code (EN) ===
+
+judges:
+  AC001:
+    template: |
+      🦆 Duck Typing Inspector: Detected misuse of Any type
+      📌 Target variable/attribute: {target_name}
+      📋 Annotation: {annotation_str}
+      💡 Suggestion: Avoid using Any. Introduce a more specific contract type (e.g. DTO / Protocol / TypedDict).
+      🔧 Quick fix examples:
+        - Define a dedicated data model or type alias for this value and use that type instead.
+        - Or use TypedDict / Protocol to describe the structure instead of Any.
+    template_ai: "{target_name}: replace Any annotation '{annotation_str}' with a specific contract type."
+
+  AC002:
+    template: |
+      🦆 Type System Auditor: Detected a dict without a value contract
+      📌 Target variable/attribute: {target_name}
+      📋 Annotation: {annotation_str}
+      💡 Suggestion: Do not use a bare dict. Introduce clearer models or type aliases for key/value.
+      🔧 Quick fix examples:
+        - Define a DTO / Schema / TypedDict / Protocol for the value type and reference it in dict[...].
+        - If this is only a carrier for configuration/data, consider using a data model (e.g. Pydantic / dataclasses) instead.
+    template_ai: "{target_name}: replace uncontracted dict annotation '{annotation_str}' with a DTO / TypedDict / Protocol."
+
+  AC003:
+    template: |
+      🦆 Type System Auditor: Detected suspicious use of typing.cast
+      📌 Expression: {annotation_str}
+      💡 Suggestion: `cast` should be a last resort. Prefer fixing type signatures and data flow instead.
+      🔧 Quick fix examples:
+        - Trace data origins so the type checker can infer the correct type naturally.
+        - Introduce more precise annotations or intermediate models for parameters/return values to reduce the need for casts at call sites.
+        - For truly necessary casts, add a nearby comment explaining the justification so the team can review it.
+    template_ai: "cast misuse: review '{annotation_str}' and fix types instead of relying on cast."
+
+  BC001:
+    template: |
+      🏛️ Boundary Control Judge: Detected boundary contract violation
+      📌 Function: {func}
+      📋 Offending parameter: {name} -> {type}
+      💡 Suggestion: For data crossing boundaries, define dedicated DTO/Schema types instead of exposing internal structures or primitive collections.
+      🔧 Quick fix: Use a data modeling library (e.g. Pydantic / dataclasses) to define a clear contract type for this parameter.
+    template_ai: "{func}: parameter {name} ({type}) should use a boundary DTO/Schema instead of a raw type."
+
+  DI001:
+    template: |
+      🏛️ Dependency Inversion Judge: Detected suspicious cross-module/component dependency
+      📋 Offending import: {imported_module}
+      💡 Suggestion: Depend on abstractions (interfaces/protocols) rather than concrete implementations, and wire implementations where needed.
+      🔧 Quick fix: Extract an interface or protocol type for this dependency and depend only on that abstraction in the caller.
+    template_ai: "avoid importing {imported_module} here; depend on an interface/protocol instead."
+
+  DS001:
+    template: |
+      🏛️ Docstring Judge: Detected missing function docstring
+      📌 Function: {func}
+      💡 Suggestion: For public or complex functions, add a docstring describing behavior, key parameters and return value.
+      🔧 Quick fix: Add a concise docstring explaining purpose, main arguments and what is returned.
+    template_ai: "add a docstring for function {func} describing behavior, parameters, and return value."
+
+  DS002:
+    template: |
+      🏛️ Docstring Judge: Detected insufficient class documentation
+      📌 Class: {klass}
+      📋 Requirement: Docstring length must be at least {min_len} characters
+      💡 Suggestion: Describe the class responsibilities, main collaborators and typical usage.
+      🔧 Quick fix: Add a triple-quoted docstring below the class definition with a brief usage description.
+    template_ai: "add a class docstring for {klass} (>= {min_len} chars) describing role and usage."
+
+  DT001:
+    template: |
+      🏛️ Time Judge: Detected direct usage of datetime.now()/utcnow()
+      💡 Suggestion: Access time via a replaceable time source (e.g. time service or clock abstraction) to support testing and timezone control.
+      🔧 Quick fix: Replace direct calls with an injected "clock" or configurable time provider.
+    template_ai: "replace direct datetime.now()/utcnow() calls with a clock/time provider abstraction."
+
+  HC001:
+    template: |
+      🏛️ Hardcoding Judge: Detected a hardcoded string or literal with business meaning
+      📌 Code snippet: {snippet}
+      💡 Suggestion: Move business-related or frequently changing literals into centralized constants or configuration.
+      🔧 Quick fix: Extract the literal into a constants module or configuration file and reference it from code.
+    template_ai: "hardcoded business literal in: {snippet}; move it to constants or configuration."
+
+  HC002:
+    template: |
+      🏛️ Constants Judge: Detected bare constant import
+      📌 Constant: {name}
+      💡 Suggestion: Use namespaces (classes/modules) to group constants instead of importing many bare names.
+      🔧 Quick fix: Group related constants under an appropriate namespace and reference them with a namespace prefix.
+    template_ai: "avoid bare import of constant {name}; expose it via a namespace (module/class)."
+
+  HC003:
+    template: |
+      🏛️ Constants Judge: Detected scattered bare constant definition
+      📌 Constant: {name}
+      💡 Suggestion: Consolidate constants in a dedicated location (e.g. a constants module), organized by domain or purpose.
+      🔧 Quick fix: Move this constant to the central constants definition and import it where needed.
+    template_ai: "move scattered constant {name} into a centralized constants module."
+
+  HC004:
+    template: |
+      🏛️ Constants Judge: Detected direct cross-context import of business constants
+      📋 Source: {source}
+      💡 Suggestion: When sharing across contexts, promote such values to system-level constants or configuration instead of coupling to a specific implementation constant.
+      🔧 Quick fix: Introduce a higher-level constant/config entry and have both sides depend on that abstraction.
+    template_ai: "avoid cross-context constant import from {source}; promote it to a higher-level constant or config."
+
+  HC005:
+    template: |
+      🏛️ Magic Number Judge: Detected hardcoded tunable business parameter
+      📌 Code snippet: {snippet}
+      📋 Impact: Thresholds/weights/window sizes, when hardcoded, are hard to tune safely across environments and versions.
+      💡 Suggestion: Move such parameters into centralized configuration or a rules system and read them instead of hardcoding.
+      🔧 Quick fix:
+        - Introduce a configuration entry or rule for this parameter instead of a literal.
+        - In code, prefer reading from configuration/rules and only fall back to a sensible default when necessary.
+    template_ai: "replace magic tunable number in: {snippet}; read it from configuration/rules instead."
+
+  LL001:
+    template: |
+      🏛️ Complexity Judge: Detected an overly long function
+      📌 Function: {func}
+      📋 Current length: {lines} lines (limit: {limit})
+      💡 Suggestion: Split into smaller, more focused helper functions so each handles a clear subtask.
+      🔧 Quick fix: Identify natural logical segments and extract them into private/internal helpers.
+    template_ai: "function {func} has {lines} lines (> {limit}); split into smaller helpers."
+
+  LL002:
+    template: |
+      🏛️ Complexity Judge: Detected high cyclomatic complexity
+      📌 Function: {func}
+      📋 Complexity: {complexity} (limit: {limit})
+      💡 Suggestion: Review branches and loops, simplify control flow, and consider patterns (strategy/state, etc.) to decompose logic.
+      🔧 Quick fix: Extract conditional blocks into separate functions or objects to avoid too many branches in a single function.
+    template_ai: "function {func} has cyclomatic complexity {complexity} (> {limit}); refactor branches/loops."
+
+  OU001:
+    template: |
+      🏛️ Grey Fog Judge: Detected usage of `object` as a type
+      💡 Suggestion: Introduce a more specific abstract base class, protocol, or concrete type rather than unconstrained `object`.
+      🔧 Quick fix: Replace `object` with a more meaningful interface/base class/union type.
+    template_ai: "replace type 'object' with a more specific interface / base class / concrete type."
+
+  PC001:
+    template: |
+      🏛️ Parameter Classification Judge: Detected an "operational/strategy" parameter hardcoded as a constant
+      📌 Constant: {const_name}
+      💡 Suggestion: Move volatile operational/strategy parameters out of core constants and into configuration or a rules system.
+      🔧 Quick fix: Add a configuration or rules entry for this parameter and retrieve it via an abstract "parameter provider" in code.
+    template_ai: "constant {const_name} looks like an operational/strategy parameter; move it to configuration/rules."
+
+  PC002:
+    template: |
+      🏛️ Parameter Classification Judge: Detected direct access to underlying rule/config assets, bypassing abstractions
+      📋 Offending code: {snippet}
+      💡 Suggestion: Avoid accessing rule/config assets via file paths or hardcoded locations; use a dedicated abstraction instead.
+      🔧 Quick fix: Introduce a rules/config provider abstraction and access parameters by ID/Key.
+    template_ai: "avoid direct access to rule/config asset in: {snippet}; use a provider abstraction."
+
+  RE001:
+    template: |
+      🏛️ Facade Discipline Judge: Detected oversized __init__.py
+      📋 Current code lines: {code_count} (limit: {max_init_lines})
+      💡 Suggestion: Keep facades slim; avoid piling implementation details or heavy imports into __init__.py.
+      🔧 Quick fix: Move implementation into dedicated modules and keep the facade focused on light exports/metadata.
+    template_ai: "__init__.py has {code_count} lines (> {max_init_lines}); move logic to dedicated modules."
+
+  RE002:
+    template: |
+      🏛️ Facade Discipline Judge: Detected business logic in __init__.py
+      📋 Offending node type: {node_type}
+      💡 Suggestion: Put concrete implementations into dedicated modules; facades should only expose public APIs or metadata.
+      🔧 Quick fix: Move classes/functions/logic to separate modules and re-export minimally from the facade.
+    template_ai: "avoid defining {node_type} in __init__.py; move business logic to dedicated modules."
+
+  RE003:
+    template: |
+      🏛️ Facade Discipline Judge: Detected discouraged structures in __init__.py
+      📋 Detail: {detail}
+      💡 Suggestion: Remove complex logic from the facade and keep only lightweight imports/aliases/descriptions.
+      🔧 Quick fix: Move implementation into dedicated modules and let __init__.py only perform necessary aggregation.
+    template_ai: "refactor discouraged structure in __init__.py: {detail}; keep the facade thin."
+
+  SK001:
+    template: |
+      🏛️ Skills Usage Judge: Detected a hardcoded "skill/capability" identifier string
+      📌 Skill ID: {skill_id}
+      💡 Suggestion: Introduce centralized constants or configuration for such identifiers instead of scattering raw strings in business code.
+      🔧 Quick fix: Declare the identifier in a shared constants/config module and access skills via a skill provider or equivalent mechanism.
+    template_ai: "[SK001] hardcoded skill ID {skill_id}; replace with a centralized constant or config entry."
+
+  SK002:
+    template: |
+      🏛️ Skills Usage Judge: Detected direct file access to skill/capability assets
+      📋 Offending code: {snippet}
+      💡 Suggestion: Avoid manipulating skill assets directly from business logic; prefer accessing them via an abstraction or service.
+      🔧 Quick fix: Introduce a skill/capability provider abstraction responsible for locating and loading underlying assets.
+    template_ai: "avoid direct file access to skill assets in: {snippet}; use a skills provider abstraction."
+
+  TC001:
+    template: |
+      🏛️ Type Checking Judge: Detected TYPE_CHECKING being used as a patch for circular dependencies
+      💡 Suggestion: Address circular dependencies by splitting modules or introducing neutral DTO/interface modules, rather than relying on conditional imports.
+      🔧 Quick fix: Move shared types/interfaces into a more stable upper layer (e.g. a dedicated types/protocols module) and have both sides depend on it.
+    template_ai: "TYPE_CHECKING is masking a circular dependency; break the cycle with a shared types/protocols module."
+
+  TP001:
+    template: |
+      🏛️ Test Purity Judge: Detected direct I/O dependency in a unit test
+      📌 Location: {file}:{line}
+      📋 Forbidden import: {import_stmt}
+      💡 Suggestion: Unit tests should be isolated from external systems (files/network/DB, etc.). Use ports or test doubles (fakes/mocks) instead of real I/O.
+    template_ai: "test {file}:{line} imports {import_stmt}; remove direct I/O and use fakes/mocks or ports."
+
+  TP002:
+    template: |
+      🏛️ Test Purity Judge: Detected tests directly depending on low-level persistence or ORM implementation
+      📌 Location: {file}:{line}
+      📋 Import statement: {import_stmt}
+      💡 Suggestion: Restrict DB integration tests to a few dedicated modules; other tests should go through repository interfaces or domain ports.
+    template_ai: "test {file}:{line} imports persistence/ORM module {import_stmt}; use repositories/ports instead."
+
+  TP003:
+    template: |
+      🏛️ Test Purity Judge: Detected pseudo-coverage tests that only check symbol existence
+      📌 Location: {file}:{line}
+      📋 Suspicious pattern: importlib.import_module + hasattr without real behavior checks
+      💡 Suggestion: Write tests that call the target function/method at least once and assert key behavior and edge cases, not just presence.
+    template_ai: "test {file}:{line} only checks symbol existence; add real behavior and edge-case assertions."
+
+  UW001:
+    template: |
+      🏛️ Unit of Work Judge: Detected a pattern related to transaction boundary misuse
+      📋 Offending method: {method}
+      💡 Suggestion: Centralize transaction management in a dedicated Unit of Work / transaction boundary component rather than in factories or business objects.
+      🔧 Quick fix: Move responsibility for starting/committing transactions into an explicit UoW or service layer that coordinates repository operations.
+    template_ai: "method {method} suggests transaction logic is not centralized in a Unit of Work/service."
+
+  UW002:
+    template: |
+      🏛️ Unit of Work Judge: Detected repository calling commit()
+      💡 Suggestion: Repositories should focus on data access; transaction commits should be controlled by an upper-layer Unit of Work or service.
+      🔧 Quick fix: Remove commit() calls from repositories and delegate commit to a higher-level transaction boundary.
+    template_ai: "repository should not call commit(); move commit responsibility to a Unit of Work/service."
+
+  UW003:
+    template: |
+      🏛️ Unit of Work Judge: Detected repository calling rollback()
+      💡 Suggestion: Repositories should not roll back transactions on their own; rollback and error handling belong in the central transaction boundary.
+      🔧 Quick fix: Remove rollback() calls from repositories and let an upper layer handle exceptions and rollbacks.
+    template_ai: "repository should not call rollback(); let the transaction boundary handle rollbacks."
+
+  UW004:
+    template: |
+      🏛️ Unit of Work Judge: Detected direct manipulation of critical resources bypassing the unified transaction boundary
+      💡 Suggestion: Ensure that all critical business operations run within a single transaction context coordinated by an explicit UoW/service.
+      🔧 Quick fix: Consolidate related calls in a unified transaction/service layer that orchestrates repositories and other external dependencies.
+    template_ai: "critical resource access bypasses the transaction boundary; run it inside a Unit of Work/service."
+
+  VT001:
+    template: |
+      🏛️ Vector Transactions Judge: Detected unsupported asset_type
+      📋 asset_type: {asset_type}
+      💡 Suggestion: Extend the vector/retrieval provider to handle this asset_type, or explicitly declare it unsupported in configuration.
+      🔧 Quick fix: Add a corresponding route/branch in the project's vector provider (or equivalent component).
+    template_ai: "unsupported asset_type {asset_type}; extend the vector provider or declare it unsupported."
+
+  VT002:
+    template: |
+      🏛️ Vector Transactions Judge: Detected unsupported capsule_kind
+      📋 capsule_kind: {capsule_kind}
+      💡 Suggestion: Extend the vector/event provider to handle this capsule_kind, or explicitly declare it unsupported in configuration.
+      🔧 Quick fix: Add a corresponding branch in the project's vector/event routing module.
+    template_ai: "unsupported capsule_kind {capsule_kind}; extend the vector/event provider or declare it unsupported."
+
+  VT003:
+    template: |
+      🏛️ Vector Transactions Judge: Detected event missing required fields
+      📌 Event: {event_name}
+      📋 Missing field: {field}
+      💡 Suggestion: Mark these fields as required in the event model/constructor to avoid relying on runtime inference.
+      🔧 Quick fix: Adjust the event definition or construction logic so all key information is provided explicitly when creating the event.
+    template_ai: "event {event_name} is missing required field {field}; mark it required in the event model."

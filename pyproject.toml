@@ -1,0 +1,187 @@
+[project]
+name = "pycourt"
+version = "0.1.1"
+description = "Production-grade code audit engine for AI-generated Python code. AST-powered, rule-based quality enforcement."
+authors = [
+    {name = "PythonCourt Team", email = "johorner@pythoncourt.com"}
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+classifiers = [
+    # 🎯 AI + 代码质量（核心定位）
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+    
+    # 🎯 开发状态
+    "Development Status :: 4 - Beta",
+    
+    # 🎯 目标用户
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    
+    # 🎯 技术领域
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Version Control :: Git",
+    
+    # 🐍 Python 版本支持
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    
+    # 🛠️ Python 生态
+    "Framework :: Pytest",
+    "Typing :: Typed",
+    
+    # 🌐 多语言支持（可选）
+    "Natural Language :: English",
+    "Natural Language :: Chinese (Simplified)",
+]
+keywords = [
+    "ai", "code-quality", "static-analysis", 
+    "ast", "linting", "architecture", 
+    "python", "audit", "rules", "production"
+]
+dependencies = [
+    "pydantic>=2.9.0,<3.0.0",
+    "PyYAML>=6.0.0,<7.0.0",
+]
+
+[project.urls]
+Homepage = "https://pythoncourt.com"
+Documentation = "https://pythoncourt.com/docs"
+Repository = "https://github.com/PythonCourt/PyCourt"
+"Bug Tracker" = "https://github.com/PythonCourt/PyCourt/issues"
+Discussions = "https://github.com/PythonCourt/PyCourt/discussions"
+
+[project.scripts]
+pycourt = "pycourt.cli:main"
+
+[tool.poetry]
+packages = [{ include = "pycourt" }]
+include = [
+  "pycourt/yaml/*.yaml",
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# ============================
+# Lint / Typecheck / Test
+# ============================
+
+[tool.ruff]
+# Linting is configured for Python 3.14 syntax/features, while runtime
+# compatibility covers 3.11 and above.
+target-version = "py314"
+line-length = 88
+exclude = ["stubs/**", "tests/**/__pycache__/**"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "B", "C4", "UP", "N", "S", "T20", "PT", "Q", "RET",
+    "SIM", "ARG", "PTH", "ERA", "PL", "RUF",
+]
+ignore = [
+    "E501",  # 行太长交给格式化工具处理
+    "B008",  # 函数默认值中调用函数
+    "S101",  # 测试中 assert 合法
+    "RUF001", "RUF002", "RUF003",  # 中文可读性优先
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*.py" = ["S101", "PLR2004"]
+
+[tool.pyright]
+stubPath = "stubs/"
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+include = ["pycourt"]
+exclude = ["**/__pycache__"]
+reportUninitializedInstanceVariable = "none"
+reportUnknownMemberType = "error"
+reportGeneralTypeIssues = "error"
+reportUnknownVariableType = "error"
+reportUnknownArgumentType = "error"
+
+[tool.mypy]
+python_version = "3.14"
+mypy_path = ".:stubs"
+namespace_packages = true
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+cache_dir = ".mypy_cache"
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_untyped_fields = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+]
+markers = [
+    "unit: fast unit tests",
+    "integration: integration tests for PyCourt",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.14.0"
+pyright = "^1.1.371"
+mypy = "^1.18.2"
+bandit = "^1.8.6"
+black = "^25.1.0"
+isort = "^7.0.0"
+types-PyYAML = "^6.0.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^9.0.0"
+pytest-asyncio = "^1.1.0"
+pytest-cov = "^6.2.1"
+pytest-timeout = "^2.4.0"
+
+[tool.pycourt]
+# 所有已“净化”的文明领土路径将收录于此。
+civilized_paths = [
+    "pycourt",
+]
+
+# 覆盖率门槛唯一真理源（迁移自 [tool.coverage.report].fail_under）
+coverage = 0

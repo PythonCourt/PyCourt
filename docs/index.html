@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PythonCourt – The Code Court for Python</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Python code audit engine powered by AST and Rule"
+    />
+    <style>
+      :root {
+        --bg: #4d4637;
+        --bg-dark: #1c1c1c;
+        --text: #f9f9f9;
+        --text-subtle: #c6c6c6;
+        --accent: #ed6a13;
+        --accent-soft: #b9946a;
+        --border-soft: #e0d4c2;
+        --code-bg: #252525;
+        --code-text: #f5f5f5;
+        --btn-bg: #ffffff;
+        --btn-border: #d1c3aa;
+        --btn-hover-bg: #f5ebdd;
+        --btn-ghost-text: #333333;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 40px 16px 80px;
+      }
+
+      header.hero {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .brand-mark {
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .hero-title {
+        font-size: 50px;
+        line-height: 1.05;
+        margin: 0 0 12px;
+      }
+
+      .hero-tagline {
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0;
+        color: var(--text-subtle);
+      }
+
+      .hero-tagline strong {
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .lang-switch {
+        margin-top: 24px;
+        display: inline-flex;
+        gap: 8px;
+      }
+
+      .btn-lang {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 14px;
+        font-size: 13px;
+        border-radius: 999px;
+        border: 1px solid var(--btn-border);
+        background: var(--btn-bg);
+        color: var(--btn-ghost-text);
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          background 0.15s ease-out,
+          border-color 0.15s ease-out,
+          color 0.15s ease-out;
+      }
+
+      .btn-lang.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      .btn-lang:hover {
+        background: var(--btn-hover-bg);
+      }
+
+      .btn-lang.primary:hover {
+        background: #cc5a0e;
+        border-color: #cc5a0e;
+      }
+
+      .btn-lang span.code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        margin-left: 4px;
+        opacity: 0.85;
+      }
+
+      .hero-install {
+        margin-top: 48px;
+      }
+
+      .section-label {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--accent);
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+
+      .code-block {
+        margin: 8px auto 0;
+        max-width: 450px;
+      }
+
+      pre.code {
+        margin: 0;
+        padding: 12px 16px;
+        border-radius: 6px;
+        background: var(--code-bg);
+        color: var(--code-text);
+        font-size: 13px;
+        overflow-x: auto;
+      }
+
+      pre.code code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+
+      .code-caption {
+        font-size: 14px;
+        color: var(--text-subtle);
+        margin-top: 6px;
+        text-align: center;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .inline-code {
+        background-color: #3a3327;
+        color: #fed7aa;  
+        padding: 0.1em 0.35em;
+        border-radius: 4px;
+        font-family: monospace;
+        border: 1px solid #3a3327;
+      }
+
+      main {
+        margin-top: 40px;
+      }
+
+      section {
+        margin-top: 40px;
+        border-top: 1px solid var(--border-soft);
+        padding-top: 28px;
+        text-align: center;
+      }
+
+      section:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+
+      section h2 {
+        margin: 0 0 12px;
+        font-size: 32px;
+        text-align: center;
+      }
+
+      section p {
+        margin: 0 0 10px;
+        line-height: 1.6;
+        color: var(--text-subtle);
+      }
+
+      ul.feature-list {
+        margin: 10px 0 0 18px;
+        padding: 0;
+        color: var(--text-subtle);
+      }
+
+      ul.feature-list li {
+        margin-bottom: 6px;
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 3px 9px;
+        font-size: 11px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--text);
+        margin-right: 6px;
+        margin-top: 4px;
+      }
+
+      .weapon-columns {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 32px;
+        row-gap: 24px;
+        margin-top: 20px;
+        text-align: left;
+      }
+
+.weapon-card {
+        padding: 16px 18px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.08);
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        transition: background 0.15s ease, transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .weapon-card:hover {
+        text-decoration: none;
+        background: rgba(0, 0, 0, 0.16);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      }
+
+      .weapon-name {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--accent);
+      }
+
+      .weapon-summary {
+        font-size: 14px;
+        color: var(--text-subtle);
+        margin: 0 0 10px;
+      }
+
+      .weapon-points {
+        margin: 0 0 0 18px;
+        padding: 0;
+        font-size: 13px;
+        color: var(--text-subtle);
+      }
+
+      .weapon-points li {
+        margin-bottom: 4px;
+      }
+
+      .config-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        column-gap: 40px;
+        row-gap: 24px;
+        margin-top: 24px;
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .config-text h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        color: var(--accent);
+      }
+
+      .config-code .section-label {
+        text-align: left;
+      }
+
+      .law-columns {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        column-gap: 40px;
+        row-gap: 12px;
+        margin-top: 8px;
+      }
+
+      .law-column {
+        text-align: center;
+      }
+
+      .law-article {
+        margin-bottom: 10px;
+      }
+
+      .law-id {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 16px;
+        color: var(--accent);
+      }
+
+      .law-name {
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+
+      .law-summary {
+        font-size: 13px;
+        color: var(--text-subtle);
+        margin: 2px 0 0;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        margin-top: 56px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-soft);
+        font-size: 13px;
+        color: var(--text-subtle);
+        text-align: center;
+      }
+
+      @media (max-width: 640px) {
+        .hero-title {
+          font-size: 34px;
+        }
+
+        .hero-tagline {
+          font-size: 16px;
+        }
+
+        .page {
+          padding: 24px 14px 56px;
+        }
+
+        .law-columns {
+          grid-template-columns: 1fr;
+        }
+
+        .weapon-columns {
+          grid-template-columns: 1fr;
+        }
+
+        .config-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- Hero -->
+      <header class="hero">
+        <div class="brand-mark">
+          <img src="static/assets/pycourt-logo.svg" alt="PythonCourt logo" style="height: 96px;" />
+        </div>
+        <h1 class="hero-title">PythonCourt</h1>
+        <p class="hero-tagline">
+          Python code audit engine powered by AST and Rule<br/>
+          Ensuring AI-generated code meets production-grade quality standards.
+        </p>
+
+        <div class="lang-switch">
+          <!-- 这里的链接你可以按实际情况改，比如 / 为 EN，/zh/ 为中文版本 -->
+          <a href="/" class="btn-lang primary">
+            <span class="code">English</span>
+          </a>
+          <a href="/zh/" class="btn-lang">
+            <span class="code">简体中文</span>
+          </a>
+        </div>
+
+        <div class="hero-install">
+          <div class="section-label">Install</div>
+          <div class="code-block">
+            <pre class="code"><code>pip install pycourt</code></pre> <!-- 需要增加复制按钮 -->
+          </div>
+          <div class="code-caption">
+            Install PyCourt into your Python environment.
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <!-- What it does -->
+        <section id="what">
+          <h2>How PyCourt Works</h2>
+          <div class="code-caption">
+            <p>
+            Instruct the AI to audit its self-generated code with PyCourt <br/>
+            and rectify issues based on the audit report.
+            </p>
+            <!-- 直接跳转到 MkDocs 文档首页（使用指南 · 概览） -->
+            <a href="guide/started/" target="_self">
+            <strong>Documentation</strong>
+            </a>
+          </div>
+        </section>
+
+        <!-- Laws -->
+        <section id="laws">
+          <h2>Production-Grade Quality System</h2>
+          <p>
+           A set of production-grade standards distilled from real-world project iterations,<br/>
+            designed to ensure long-term maintainability and robustness of your system.
+          </p>
+
+          <div class="law-columns">
+            <div class="law-column">
+              <div class="law-article">
+                <div class="law-id">AC001</div>
+                <div class="law-name">- TheAnyCastLaw -</div>
+                <p class="law-summary">
+                  Prohibits relying on Any, uncontracted dicts and blind typing.cast, to avoid turning core data flows into untyped “duck‑typed” fog that static checks cannot protect.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">BC001</div>
+                <div class="law-name">- TheBlackCircleLaw -</div>
+                <p class="law-summary">
+                  Prohibits primitive or container types on HTTP/adaptor boundaries, to avoid leaking internal models instead of explicit DTO / contract types at the system edge.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">DI001</div>
+                <div class="law-name">- TheDepInvLaw -</div>
+                <p class="law-summary">
+                  Prohibits cross‑component imports that bypass core abstractions, to avoid breaking dependency inversion and tightly coupling modules to one another’s implementations.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">DT001</div>
+                <div class="law-name">- TheDateTimeLaw -</div>
+                <p class="law-summary">
+                  Prohibits direct use of datetime.now() / datetime.utcnow(), to avoid hidden time drift and untestable time‑dependent logic outside a single TimeProvider.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">DS001</div>
+                <div class="law-name">- TheDocsStringLaw -</div>
+                <p class="law-summary">
+                  Prohibits public functions and classes from lacking clear, non‑trivial docstrings, to avoid opaque APIs whose intent and contract cannot be reviewed or taught.
+                </p>
+              </div>
+            </div>
+
+            <div class="law-column">
+              <div class="law-article">
+                <div class="law-id">HC001</div>
+                <div class="law-name">- TheHardcodingLaw -</div>
+                <p class="law-summary">
+                  Prohibits hard‑coded business literals and magic numbers outside constant modules, to avoid hiding configuration and cross‑engine contracts in scattered code.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">LL001</div>
+                <div class="law-name">- TheLineLoopLaw -</div>
+                <p class="law-summary">
+                  Prohibits functions whose length or cyclomatic complexity exceeds agreed thresholds, to avoid procedures that are too large and tangled to reason about safely.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">OU001</div>
+                <div class="law-name">- TheObjectUsageLaw -</div>
+                <p class="law-summary">
+                  Prohibits using bare object as a type in core code, to avoid “grey fog” values with no contract, where invariants and capabilities cannot be enforced.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">PC001</div>
+                <div class="law-name">- TheParamClassLaw -</div>
+                <p class="law-summary">
+                  Prohibits treating adjustable business rules as core constants and bypassing the rule provider to directly access rule files, to avoid confusing operational controls with technical constants.
+                </p>
+              </div>
+
+              <div class="law-article">
+                <div class="law-id">RE001</div>
+                <div class="law-name">- TheInitNNoReExpLaw -</div>
+                <p class="law-summary">
+                  Prohibits bloated __init__.py files that contain logic, control flow or export gymnastics, to avoid package facades degenerating into a second hidden implementation module.
+                </p>
+              </div>
+            </div>
+
+            <div class="law-column">
+              <div class="law-article">
+                <div class="law-id">SK001</div>
+                <div class="law-name">- TheSkillsUsageLaw -</div>
+                <p class="law-summary">
+                  Prohibits hard‑coding Skill IDs or directly reading from assets/skills via file I/O, to avoid coupling business code to physical skill layouts instead of a central SkillId registry and provider.
+                </p>
+              </div>
+
+            <div class="law-column">
+              <div class="law-article">
+                <div class="law-id">TC001</div>
+                <div class="law-name">- TheTypeCheckingLaw -</div>
+                <p class="law-summary">
+                  Prohibits any use of if TYPE_CHECKING: structures, to avoid hiding circular dependencies behind “type‑only” imports that still entangle modules.
+                </p>
+              </div>
+
+            <div class="law-column">
+              <div class="law-article">
+                <div class="law-id">TP001</div>
+                <div class="law-name">- TheTestPurityLaw -</div>
+                <p class="law-summary">
+                  Prohibits unit tests that import heavy I/O stacks, smuggle in SQLAlchemy outside whitelists, to avoid slow, brittle and fake‑coverage tests.
+                </p>
+              </div>
+            
+            <div class="law-column">
+              <div class="law-article">
+                <div class="law-id">UW001</div>
+                <div class="law-name">- TheUnitOfWorkLaw -</div>
+                <p class="law-summary">
+                  Prohibits RepositoryFactory usage and commit() / rollback() calls inside repositories, to avoid violating Unit‑of‑Work atomicity and leaking transaction control.
+                </p>
+              </div>
+
+            <div class="law-column">
+              <div class="law-article">
+                <div class="law-id">VT001</div>
+                <div class="law-name">- TheVectorTriggerLaw -</div>
+                <p class="law-summary">
+                  Prohibits raising vector or materialization events that are not backed by corresponding provider routes, to avoid emitting events that no vector service can actually fulfill at runtime.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Flexible trial procedures -->
+        <section id="weapons">
+          <h2>Designed Audit Strategies</h2>
+          <p>
+            Provides carefully designed audit strategies for three distinct development scenarios.
+          </p>
+
+          <div class="weapon-columns">
+            <a class="weapon-card" href="script/official/qaf/">
+              <div class="weapon-name">Dagger: File</div>
+              <p class="weapon-summary">
+                <strong>Immediate purification, zero debt.</strong>
+              </p>
+              <ul class="weapon-points">
+                <li>Performs static audit on a single '.py' file.</li>
+                <li>Customize which laws to apply and in what order.</li>
+                <li>Co‑runs with Pyright, Mypy, Bandit and Ruff as needed.</li>
+                <li>Discover violations and provide explanations and suggested fixes</li>
+              </ul>
+            </a>
+
+            <a class="weapon-card" href="script/official/qas/">
+              <div class="weapon-name">Saber: Directory</div>
+              <p class="weapon-summary">
+                <strong>Batch purification, no collateral damage.</strong>
+              </p>
+              <ul class="weapon-points">
+                <li>Performs static audits on all files within a folder.</li>
+                <li>Discovers associated test code, performs a static audit on it, and runs the unit tests.</li>
+                <li>Investigation mode to capture all violations and plan remediation.</li>
+              </ul>
+            </a>
+
+            <a class="weapon-card" href="script/official/qa/">
+              <div class="weapon-name">Scepter: Domain</div>
+              <p class="weapon-summary">
+                <strong>Cross‑domain integrity, one‑click acceptance.</strong>
+              </p>
+              <ul class="weapon-points">
+                <li>Performs integrated audit for a logical component across directories.</li>
+                <li>Invokes Saber to perform static audits on audit objectives and test code.</li>
+                <li>Drives unit and integration tests across the whole project scope.</li>
+                <li>Start a smooth journey in PR and CI/CD.</li>
+              </ul>
+            </a>
+          </div>
+        </section>
+
+        <!-- Config-driven courtroom -->
+        <section id="config">
+          <h2>Customize Your Courtroom</h2>
+          <p>
+            Define the laws and the trial procedures<br/>
+            Build a complete quality governance system tailored to your project.
+          </p>
+
+          <div class="config-grid">
+           <div class="config-text">
+            <h3>Your Project Lawbook</h3>
+              <p>
+                Grant strategic exemptions to respect your architecture.<br/>
+              </p>
+            <ul class="feature-list">
+              <li>Enable or disable individual laws.</li>
+              <li>Tune thresholds and options per law.</li>
+              <li>Grant strategic exemptions: e.g., exempt the `bootstrap.py` from `DI001` to respect Dependency Inversion.</li>
+              <li>Run <code class="inline-code">pycourt init</code> and then edit it by hand.</li>
+            </ul>
+          </div>
+
+            <div class="config-code">
+              <div class="code-block">
+                <pre class="code"><code># pycourt.yaml
+laws:
+  ll001:
+    enabled: true
+    max_function_lines: 50
+
+exemptions:
+  DI001:
+    files:
+      - "src/di/**"</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="config-grid" style="margin-top: 32px;">
+            <div class="config-text">
+              <h3>Your Project Quality Sovereignty</h3>
+              <p>
+                Declare the scope of the production code, and accept the review by PyCourt.
+                
+              </p>
+              <ul class="feature-list">
+                <li>Map your civilized territory by architectural and dependency.</li>
+                <li>Map scattered components to civilized paths.</li>
+                <li>Use a single source of truth for the coverage threshold.</li>
+                <li>Uncomment a path to start auditing that layer.</li>
+                <li>No comments left means a purified component.</li>
+                <li>Now, PR with confidence.</li>
+                
+              </ul>
+            </div>
+
+            <div class="config-code">
+              <div class="code-block">
+                <pre class="code"><code># pyproject.toml
+[tool.pycourt]
+# Audit of cross-domain components and modules.
+civilized_paths = [
+    "src/api",      # civilized
+    "src/business", # civilized
+    "src/services", # civilized
+    "src/infra",    # civilized
+    "src/core",     # civilized
+    # "tools",      # excluded from this CI run
+]
+
+# Single source for the coverage threshold (%).
+coverage = 85</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Community -->
+        <section id="community">
+            <h2>Community & Discussion</h2>
+            <p><strong>Stop struggling alone. Start advancing together.</strong></p>
+            <p>As a beginner learning to code with AI, I was constantly wrestling with the quality.</p> 
+            <p>I built PyCourt—a final method to turn the situation around.</p> 
+            <p>If you have ever had the same doubts, welcome to join the PythonCourt community.</p>
+
+            <h3>Use & report back</h3>
+                <p>Try to use PyCourt in your project and give feedback on your experience. <br/> 
+                I will be very grateful that you have taught me more.</p>
+
+            <h3 style="margin-top: 24px;">Design & publish</h3>
+                <p>Improve existing laws or design entirely new weapons.</p>
+                <p>Publish your work so it can benefit others.</p>
+
+            <h3 style="margin-top: 24px;">Discuss & plan</h3>
+                <p>Propose new laws, weapons, or AI workflows. </p>
+                <p>Let's discuss how to achieve rapid, high‑quality growth—together.</p>
+
+            <h3 style="margin-top: 24px;">Ready to team up?</h3>
+            <p>Start a trial, design a weapon, or open a case here:<br>
+            <a href="https://github.com/PythonCourt" target="_blank">
+            PythonCourt Organization</a>
+            —
+            <a href="https://github.com/PythonCourt/pycourt" target="_blank">
+            PyCourt Repository</a>
+        </p>
+        </section>
+      </main>
+
+      <footer>
+      <div>© 2025 PythonCourt. Open‑source and community‑driven.</div>
+        <div>
+        <a href="https://github.com/PythonCourt" target="_blank">GitHub</a>
+        ·
+        <a href="https://github.com/PythonCourt/pycourt/blob/main/LICENSE.md" target="_blank">MIT License</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
